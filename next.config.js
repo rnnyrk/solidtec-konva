@@ -63,7 +63,6 @@ const config = (phase, config) => {
          * Webpack configuration from Next. When changing anything, keep in mind to preserve the
          * config of Next (unless you are trying to overwrite something) or things might break.
          */
-
         /** @type {import('webpack').ModuleOptions['rules']} */
         const rules = [
           {
@@ -104,6 +103,8 @@ const config = (phase, config) => {
         }
 
         config.resolve.plugins = [...config.resolve.plugins];
+
+        config.externals = [...config.externals, { canvas: 'canvas' }]; // required to make Konva & react-konva work
 
         return config;
       },
