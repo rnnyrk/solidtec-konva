@@ -1,42 +1,51 @@
-import { useRef } from 'react';
-import { Layer, Line, Rect, Stage } from 'react-konva';
+import { useRef, useState } from 'react';
+import { KonvaEventObject } from 'konva/lib/Node';
+import { Layer, Rect, Stage } from 'react-konva';
 
-type Line = {
-  points: number[];
-  stroke: string;
-  strokeWidth: number;
+import { Controls } from './Controls';
+import { Grid } from './Grid';
+
+type BaseRect = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
+const BLOCK_SNAP_SIZE = 30;
+
+const RECT_BASE = {
+  x: 0,
+  y: 0,
+  width: BLOCK_SNAP_SIZE * 6,
+  height: BLOCK_SNAP_SIZE * 3,
 };
 
 function Canvas() {
+  const [selected, setSelected] = useState<string | null>(null);
+  const [rects, setRects] = useState<BaseRect[]>([RECT_BASE]);
+
   const stageRef = useRef<any | null>(null);
   const shadowRef = useRef<any | null>(null);
 
   const width = window.innerWidth;
   const height = window.innerHeight;
 
-  const blockSnapSize = 30;
-  const padding = blockSnapSize;
-
-  const horizontalLines: Line[] = [];
-  const verticalLines: Line[] = [];
-
-  for (var i = 0; i < width / padding; i++) {
-    horizontalLines.push({
-      points: [Math.round(i * padding) + 0.5, 0, Math.round(i * padding) + 0.5, height],
-      stroke: '#ddd',
-      strokeWidth: 1,
-    });
+  function onAddRect() {
+    setRects([RECT_BASE, ...rects]);
   }
 
-  for (var j = 0; j < height / padding; j++) {
-    verticalLines.push({
-      points: [0, Math.round(j * padding), width, Math.round(j * padding)],
-      stroke: '#ddd',
-      strokeWidth: 0.5,
-    });
+  function onActivateRect(event: KonvaEventObject<MouseEvent>) {
+    const rectId = event.target.id();
+    setSelected(rectId);
   }
 
-  function onDragStart(event) {
+  function onRotateRect() {
+    if (!stageRef.current || !selected) return;
+    stageRef.current.find(`#${selected}`)[0].rotate(90);
+  }
+
+  function onDragStart(event: KonvaEventObject<DragEvent>) {
     if (!shadowRef.current || !stageRef.current) return;
 
     shadowRef.current.show();
@@ -44,85 +53,77 @@ function Canvas() {
     event.target.moveToTop();
   }
 
-  function onDragEnd(event) {
+  function onDragEnd(event: KonvaEventObject<DragEvent>) {
     if (!shadowRef.current || !stageRef.current) return;
 
     event.target.position({
-      x: Math.round(event.target.x() / blockSnapSize) * blockSnapSize,
-      y: Math.round(event.target.y() / blockSnapSize) * blockSnapSize,
+      x: Math.round(event.target.x() / BLOCK_SNAP_SIZE) * BLOCK_SNAP_SIZE,
+      y: Math.round(event.target.y() / BLOCK_SNAP_SIZE) * BLOCK_SNAP_SIZE,
     });
 
     stageRef.current.batchDraw();
     shadowRef.current.hide();
   }
 
-  function onDragMove(event) {
+  function onDragMove(event: KonvaEventObject<DragEvent>) {
     if (!shadowRef.current || !stageRef.current) return;
 
+    shadowRef.current.rotation(event.target.rotation());
+
     shadowRef.current.position({
-      x: Math.round(event.target.x() / blockSnapSize) * blockSnapSize,
-      y: Math.round(event.target.y() / blockSnapSize) * blockSnapSize,
+      x: Math.round(event.target.x() / BLOCK_SNAP_SIZE) * BLOCK_SNAP_SIZE,
+      y: Math.round(event.target.y() / BLOCK_SNAP_SIZE) * BLOCK_SNAP_SIZE,
     });
 
     stageRef.current.batchDraw();
   }
 
   return (
-    <Stage
-      width={width}
-      height={height}
-      ref={stageRef}
-    >
-      <Layer>
-        {horizontalLines.map((line, i) => {
-          return (
-            <Line
-              key={`line_horizontal_${i}`}
-              {...line}
-            />
-          );
-        })}
-        {verticalLines.map((line, i) => {
-          return (
-            <Line
-              key={`line_vertical_${i}`}
-              {...line}
-            />
-          );
-        })}
-      </Layer>
+    <>
+      <Controls
+        onAddRect={onAddRect}
+        onRotateRect={onRotateRect}
+        isSelected={Boolean(selected)}
+      />
+      <Stage
+        width={width}
+        height={height}
+        ref={stageRef}
+      >
+        <Grid />
 
-      <Layer>
-        <Rect
-          ref={shadowRef}
-          x={0}
-          y={0}
-          width={blockSnapSize * 6}
-          height={blockSnapSize * 3}
-          fill="#FF7B17"
-          opacity={0.6}
-          visible={false}
-        />
+        <Layer>
+          <Rect
+            ref={shadowRef}
+            x={0}
+            y={0}
+            width={BLOCK_SNAP_SIZE * 6}
+            height={BLOCK_SNAP_SIZE * 3}
+            fill="#FF7B17"
+            opacity={0.6}
+            visible={false}
+          />
 
-        <Rect
-          x={0}
-          y={0}
-          width={blockSnapSize * 6}
-          height={blockSnapSize * 3}
-          fill="#fff"
-          stroke="#ddd"
-          strokeWidth={1}
-          shadowColor="black"
-          shadowBlur={2}
-          shadowOffset={{ x: 1, y: 1 }}
-          shadowOpacity={0.4}
-          draggable
-          onDragStart={onDragStart}
-          onDragEnd={onDragEnd}
-          onDragMove={onDragMove}
-        />
-      </Layer>
-    </Stage>
+          {rects.map((rect, index) => {
+            return (
+              <Rect
+                key={`rect-${index}`}
+                {...rect}
+                id={`rect-${index}`}
+                fill={selected === `rect-${index}` ? '#f5b889' : '#fff'}
+                stroke="#ddd"
+                strokeWidth={1}
+                draggable
+                onDragStart={onDragStart}
+                onDragEnd={onDragEnd}
+                onDragMove={onDragMove}
+                onClick={onActivateRect}
+              />
+            );
+          })}
+        </Layer>
+      </Stage>
+    </>
   );
 }
 
