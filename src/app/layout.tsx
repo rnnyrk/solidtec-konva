@@ -19,11 +19,11 @@ export const metadata = {
   openGraph: {
     title: siteName,
     description: 'Javascript developer from Amsterdam',
-    url: 'https://rnny.nl',
+    url: 'http://localhost:3000',
     siteName,
     images: [
       {
-        url: 'https://rnny.nl/og.jpg',
+        url: 'http://localhost:3000/og.jpg',
         width: 1920,
         height: 1080,
       },
