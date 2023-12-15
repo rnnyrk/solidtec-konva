@@ -29,6 +29,7 @@ const config = (phase, config) => {
   let cfg = {
     ...nextConfig,
     // Remove x-powered-by header to remove information about the server
+    output: 'export',
     poweredByHeader: false,
     basePath: '',
     devIndicators: {
