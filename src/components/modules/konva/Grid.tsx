@@ -7,12 +7,12 @@ type Line = {
   opacity: number;
 };
 
-export function Grid() {
+export function Grid({ blockSnapSize }: { blockSnapSize: number }) {
   const width = window.innerWidth;
   const height = window.innerHeight;
 
-  const blockSnapSize = 30;
   const padding = blockSnapSize;
+  const opacity = 0.1;
 
   const horizontalLines: Line[] = [];
   const verticalLines: Line[] = [];
@@ -22,7 +22,7 @@ export function Grid() {
       points: [Math.round(i * padding) + 0.5, 0, Math.round(i * padding) + 0.5, height],
       stroke: '#ddd',
       strokeWidth: 1,
-      opacity: 0.2,
+      opacity,
     });
   }
 
@@ -31,7 +31,7 @@ export function Grid() {
       points: [0, Math.round(j * padding), width, Math.round(j * padding)],
       stroke: '#ddd',
       strokeWidth: 0.5,
-      opacity: 0.2,
+      opacity,
     });
   }
 

@@ -37,6 +37,12 @@ function Canvas() {
 
   function onActivateRect(event: KonvaEventObject<MouseEvent>) {
     const rectId = event.target.id();
+
+    if (selected === rectId) {
+      setSelected(null);
+      return;
+    }
+
     setSelected(rectId);
   }
 
@@ -90,7 +96,7 @@ function Canvas() {
         height={height}
         ref={stageRef}
       >
-        <Grid />
+        <Grid blockSnapSize={BLOCK_SNAP_SIZE} />
 
         <Layer>
           <Rect
@@ -107,8 +113,8 @@ function Canvas() {
           {rects.map((rect, index) => {
             return (
               <Rect
-                key={`rect-${index}`}
                 {...rect}
+                key={`rect-${index}`}
                 id={`rect-${index}`}
                 fill={selected === `rect-${index}` ? '#f5b889' : '#fff'}
                 stroke="#ddd"
