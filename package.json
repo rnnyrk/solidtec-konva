@@ -1,8 +1,8 @@
 {
-  "name": "rnny-starter-nextjs13",
+  "name": "solidtec-konva",
   "version": "1.0.0",
-  "description": "Personal starter for NextJS 13, Tailwind, TypeScript",
-  "author": "Ronny Rook",
+  "description": "Solidtec 2d pattern maker with Konva",
+  "author": "Ronny Rook / Just Right Webdesign",
   "url": "https://rnny.nl/",
   "scripts": {
     "start": "next dev -p $([ -f .port ] && cat .port || echo 3000)",
