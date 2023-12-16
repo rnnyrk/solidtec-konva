@@ -5,7 +5,7 @@ import { Layer, Rect, Stage } from 'react-konva';
 import { Controls } from './Controls';
 import { Grid } from './Grid';
 
-type BaseRect = {
+type BaseBlock = {
   x: number;
   y: number;
   width: number;
@@ -13,8 +13,9 @@ type BaseRect = {
 };
 
 const BLOCK_SNAP_SIZE = 30;
+const MAX_BLOCKS = 6;
 
-const RECT_BASE = {
+const BLOCK_BASE = {
   x: 0,
   y: 0,
   width: BLOCK_SNAP_SIZE * 6,
@@ -23,7 +24,7 @@ const RECT_BASE = {
 
 function Canvas() {
   const [selected, setSelected] = useState<string | null>(null);
-  const [rects, setRects] = useState<BaseRect[]>([RECT_BASE]);
+  const [blocks, setBlocks] = useState<BaseBlock[]>([BLOCK_BASE]);
 
   const stageRef = useRef<any | null>(null);
   const shadowRef = useRef<any | null>(null);
@@ -31,24 +32,48 @@ function Canvas() {
   const width = window.innerWidth;
   const height = window.innerHeight;
 
-  function onAddRect() {
-    setRects([RECT_BASE, ...rects]);
+  function onAdd() {
+    setBlocks([BLOCK_BASE, ...blocks]);
   }
 
-  function onActivateRect(event: KonvaEventObject<MouseEvent>) {
-    const rectId = event.target.id();
+  function onActivate(event: KonvaEventObject<MouseEvent>) {
+    const blockId = event.target.id();
 
-    if (selected === rectId) {
+    if (selected === blockId) {
       setSelected(null);
       return;
     }
 
-    setSelected(rectId);
+    setSelected(blockId);
   }
 
-  function onRotateRect() {
+  function onRotate() {
     if (!stageRef.current || !selected) return;
+
+    const element = stageRef.current.find(`#${selected}`)[0];
+    const currentRotation = element.rotation();
+
+    if (currentRotation === 90) {
+      element.rotation(0);
+      return;
+    }
+
     stageRef.current.find(`#${selected}`)[0].rotate(90);
+    stageRef.current.batchDraw();
+  }
+
+  function onAlignLeft() {
+    if (!stageRef.current || !selected) return;
+
+    const element = stageRef.current.find(`#${selected}`)[0];
+
+    element.rotation(0);
+    element.position({
+      x: 0,
+      y: height / 2 - BLOCK_SNAP_SIZE * 1.5,
+    });
+
+    stageRef.current.batchDraw();
   }
 
   function onDragStart(event: KonvaEventObject<DragEvent>) {
@@ -87,9 +112,10 @@ function Canvas() {
   return (
     <>
       <Controls
-        onAddRect={onAddRect}
-        onRotateRect={onRotateRect}
+        amountOfBlocks={blocks.length}
+        maxBlocks={MAX_BLOCKS}
         isSelected={Boolean(selected)}
+        {...{ onAdd, onAlignLeft, onRotate }}
       />
       <Stage
         width={width}
@@ -110,20 +136,20 @@ function Canvas() {
             visible={false}
           />
 
-          {rects.map((rect, index) => {
+          {blocks.map((block, index) => {
             return (
               <Rect
-                {...rect}
-                key={`rect-${index}`}
-                id={`rect-${index}`}
-                fill={selected === `rect-${index}` ? '#f5b889' : '#fff'}
+                {...block}
+                key={`block-${index}`}
+                id={`block-${index}`}
+                fill={selected === `block-${index}` ? '#f5b889' : '#fff'}
                 stroke="#ddd"
                 strokeWidth={1}
                 draggable
                 onDragStart={onDragStart}
                 onDragEnd={onDragEnd}
                 onDragMove={onDragMove}
-                onClick={onActivateRect}
+                onClick={onActivate}
               />
             );
           })}
