@@ -131,7 +131,7 @@ function Canvas() {
             y={0}
             width={BLOCK_SNAP_SIZE * 6}
             height={BLOCK_SNAP_SIZE * 3}
-            fill="#FF7B17"
+            fill="#89d5f5"
             opacity={0.6}
             visible={false}
           />
@@ -142,7 +142,7 @@ function Canvas() {
                 {...block}
                 key={`block-${index}`}
                 id={`block-${index}`}
-                fill={selected === `block-${index}` ? '#f5b889' : '#fff'}
+                fill={selected === `block-${index}` ? '#89d5f5' : '#fff'}
                 stroke="#ddd"
                 strokeWidth={1}
                 draggable
