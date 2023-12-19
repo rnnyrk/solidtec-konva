@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-
 /** @typedef {import('next').NextConfig} NextConfig */
 /** @typedef {import('webpack').Configuration} WebpackConfiguration */
 
-const { PHASE_PRODUCTION_BUILD, PHASE_PRODUCTION_SERVER } = require('next/constants');
+const { PHASE_PRODUCTION_SERVER } = require('next/constants');
 
 const APP_ENV = process.env.APP_ENV || 'development';
 
@@ -28,22 +26,17 @@ const config = (phase, config) => {
   /** @type {NextConfig} */
   let cfg = {
     ...nextConfig,
-    // Remove x-powered-by header to remove information about the server
     output: 'export',
-    poweredByHeader: false,
+    distDir: 'dist',
     basePath: '',
-    devIndicators: {
-      buildActivity: true,
-      buildActivityPosition: 'bottom-left',
-    },
-    headers() {
-      return [
-        {
-          source: '/(.*)',
-          headers: securityHeaders,
-        },
-      ];
-    },
+    // headers() {
+    //   return [
+    //     {
+    //       source: '/(.*)',
+    //       headers: securityHeaders,
+    //     },
+    //   ];
+    // },
   };
 
   /**

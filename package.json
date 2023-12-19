@@ -13,7 +13,7 @@
     "prettier": "prettier --write '**/*.{js,ts,tsx}'",
     "typecheck": "tsc --noEmit",
     "test": "npx concurrently 'npm run lint' 'npm run typecheck'",
-    "export": "npx http-server --cors out/index.html"
+    "export": "npx http-server --cors 'out/index.html' -o -p 9000"
   },
   "dependencies": {
     "clsx": "2.0.0",
