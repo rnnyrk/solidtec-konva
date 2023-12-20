@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { Layer, Rect, Stage } from 'react-konva';
+import useImage from 'use-image';
 
 import { Controls } from './Controls';
 import { Grid } from './Grid';
@@ -23,11 +24,14 @@ const BLOCK_BASE = {
 };
 
 function Canvas() {
+  const [image] = useImage('/images/pallet-top.png');
+
   const [selected, setSelected] = useState<string | null>(null);
   const [blocks, setBlocks] = useState<BaseBlock[]>([BLOCK_BASE]);
 
   const stageRef = useRef<any | null>(null);
   const shadowRef = useRef<any | null>(null);
+  const palletRef = useRef<any | null>(null);
 
   const width = window.innerWidth;
   const height = window.innerHeight;
@@ -126,6 +130,15 @@ function Canvas() {
 
         <Layer>
           <Rect
+            ref={palletRef}
+            width={BLOCK_SNAP_SIZE * 18}
+            height={BLOCK_SNAP_SIZE * 12}
+            fillPatternImage={image}
+            x={BLOCK_SNAP_SIZE * 30}
+            y={BLOCK_SNAP_SIZE * 15}
+          />
+
+          <Rect
             ref={shadowRef}
             x={0}
             y={0}
@@ -150,6 +163,7 @@ function Canvas() {
                 onDragEnd={onDragEnd}
                 onDragMove={onDragMove}
                 onClick={onActivate}
+                // onTap={onActivate}
               />
             );
           })}

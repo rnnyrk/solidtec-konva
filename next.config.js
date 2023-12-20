@@ -1,7 +1,7 @@
 /** @typedef {import('next').NextConfig} NextConfig */
 /** @typedef {import('webpack').Configuration} WebpackConfiguration */
 
-const { PHASE_PRODUCTION_SERVER } = require('next/constants');
+const { PHASE_EXPORT, PHASE_PRODUCTION_SERVER } = require('next/constants');
 
 const APP_ENV = process.env.APP_ENV || 'development';
 
@@ -27,7 +27,7 @@ const config = (phase, config) => {
   let cfg = {
     ...nextConfig,
     output: 'export',
-    basePath: '/easyui',
+    // basePath: PHASE_EXPORT ? '/easyui' : '',
     distDir: 'dist',
     cleanDistDir: true,
   };

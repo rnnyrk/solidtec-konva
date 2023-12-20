@@ -13,16 +13,17 @@
     "prettier": "prettier --write '**/*.{js,ts,tsx}'",
     "typecheck": "tsc --noEmit",
     "test": "npx concurrently 'npm run lint' 'npm run typecheck'",
-    "export": "npx http-server --cors 'out/index.html' -o -p 9000"
+    "export": "npx http-server --cors 'dist/index.html' -o -p 9000"
   },
   "dependencies": {
     "clsx": "2.0.0",
-    "konva": "^9.2.3",
+    "konva": "9.2.3",
     "next": "14.0.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-konva": "^18.2.10",
-    "sharp": "00.33.0"
+    "react-konva": "18.2.10",
+    "sharp": "00.33.0",
+    "use-image": "^1.1.1"
   },
   "devDependencies": {
     "@babel/core": "7.23.6",
