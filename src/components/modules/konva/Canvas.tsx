@@ -1,14 +1,16 @@
 import { useRef, useState } from 'react';
 import { KonvaEventObject } from 'konva/lib/Node';
-import { Layer, Rect, Stage } from 'react-konva';
+import { Group, Layer, Rect, Stage, Text } from 'react-konva';
 
 import { Controls } from './Controls';
 import { Grid } from './Grid';
 import { Pallet } from './Pallet';
 
-const BLOCK_SIZE = 20;
+const BLOCK_SIZE = 20; // 10cm in real life
 const MAX_BLOCKS = 6;
 
+// Stage dimensions are based on real pallet dimensions
+// Pallet 180cm x 120cm. 10cm = 20px
 const STAGE_WIDTH = BLOCK_SIZE * 36;
 const STAGE_HEIGHT = BLOCK_SIZE * 24;
 const BLOCK_WIDTH = BLOCK_SIZE * 10;
@@ -21,8 +23,11 @@ const BLOCK_BASE = {
   height: BLOCK_HEIGHT,
 };
 
+// @TODO add index to block as text; https://stackoverflow.com/questions/55227880/how-to-put-a-text-inside-a-rect-using-konva-js
+// @TODO collision detection; https://konvajs.org/docs/sandbox/Collision_Detection.html
+
 function Canvas() {
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selected, setSelected] = useState<number | null>(null);
   const [blocks, setBlocks] = useState<BaseBlock[]>([BLOCK_BASE]);
 
   const stageRef = useRef<any | null>(null);
@@ -32,36 +37,36 @@ function Canvas() {
     setBlocks([BLOCK_BASE, ...blocks]);
   }
 
-  function onActivate(event: KonvaEventObject<MouseEvent>) {
-    const blockId = event.target.id();
-
-    if (selected === blockId) {
+  function onActivate(index: number) {
+    if (selected === index) {
       setSelected(null);
       return;
     }
 
-    setSelected(blockId);
+    setSelected(index);
   }
 
   function onRotate() {
-    if (!stageRef.current || !selected) return;
+    if (!stageRef.current || selected === null) return;
 
-    const element = stageRef.current.find(`#${selected}`)[0];
+    const groupId = `#group-${selected}`;
+    const element = stageRef.current.find(groupId)[0];
+
     const currentRotation = element.rotation();
-
     if (currentRotation === 90) {
       element.rotation(0);
       return;
     }
 
-    stageRef.current.find(`#${selected}`)[0].rotate(90);
+    stageRef.current.find(groupId)[0].rotate(90);
     stageRef.current.batchDraw();
   }
 
   function onAlignLeft() {
-    if (!stageRef.current || !selected) return;
+    if (!stageRef.current || selected === null) return;
 
-    const element = stageRef.current.find(`#${selected}`)[0];
+    const groupId = `#group-${selected}`;
+    const element = stageRef.current.find(groupId)[0];
 
     element.rotation(0);
     element.position({
@@ -129,7 +134,7 @@ function Canvas() {
       <Controls
         amountOfBlocks={blocks.length}
         maxBlocks={MAX_BLOCKS}
-        isSelected={Boolean(selected)}
+        isSelected={selected}
         {...{ onAdd, onAlignLeft, onRotate }}
       />
 
@@ -165,19 +170,34 @@ function Canvas() {
 
           {blocks.map((block, index) => {
             return (
-              <Rect
+              <Group
                 {...block}
-                key={`block-${index}`}
-                id={`block-${index}`}
-                fill={selected === `block-${index}` ? '#89d5f5' : '#ffffff'}
-                stroke="#ddd"
-                strokeWidth={1}
+                key={`group-${index}`}
+                id={`group-${index}`}
                 draggable
                 onDragStart={onDragStart}
                 onDragEnd={onDragEnd}
                 onDragMove={onDragMove}
-                onClick={onActivate}
-              />
+                onClick={() => onActivate(index)}
+              >
+                <Rect
+                  {...block}
+                  key={`block-${index}`}
+                  id={`block-${index}`}
+                  fill={selected === index ? '#89d5f5' : '#ffffff'}
+                  stroke="#ddd"
+                  strokeWidth={1}
+                />
+                <Text
+                  {...block}
+                  y={block.y + 36}
+                  key={`text-${index}`}
+                  id={`text-${index}`}
+                  fontSize={60}
+                  text={`${index + 1}`}
+                  align="center"
+                />
+              </Group>
             );
           })}
         </Layer>

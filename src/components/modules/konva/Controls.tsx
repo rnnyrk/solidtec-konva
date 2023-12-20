@@ -18,13 +18,13 @@ export function Controls({
       </Button>
       <Button
         onClick={onRotate}
-        disabled={!isSelected}
+        disabled={isSelected === null}
       >
         Rotate
       </Button>
       <Button
         onClick={onAlignLeft}
-        disabled={!isSelected}
+        disabled={isSelected === null}
       >
         Align left
       </Button>
@@ -38,5 +38,5 @@ type ControlProps = {
   onAdd: () => void;
   onAlignLeft: () => void;
   onRotate: () => void;
-  isSelected: boolean;
+  isSelected: number | null;
 };
