@@ -1,10 +1,12 @@
 import { Layer, Line } from 'react-konva';
 
-export function Grid({ blockSize }: GridProps) {
+import { BLOCK_SIZE } from 'utils/constants';
+
+export function Grid() {
   const width = window.innerWidth;
   const height = window.innerHeight;
 
-  const padding = blockSize;
+  const padding = BLOCK_SIZE;
   const opacity = 0.1;
 
   const horizontalLines: LineProps[] = [];
@@ -55,8 +57,4 @@ type LineProps = {
   stroke: string;
   strokeWidth: number;
   opacity: number;
-};
-
-type GridProps = {
-  blockSize: number;
 };

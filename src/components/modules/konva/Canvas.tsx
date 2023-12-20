@@ -2,28 +2,19 @@ import { useRef, useState } from 'react';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { Group, Layer, Rect, Stage, Text } from 'react-konva';
 
+import {
+  BLOCK_BASE,
+  BLOCK_HEIGHT,
+  BLOCK_SIZE,
+  BLOCK_WIDTH,
+  STAGE_HEIGHT,
+  STAGE_WIDTH,
+} from 'utils/constants';
+
 import { Controls } from './Controls';
 import { Grid } from './Grid';
 import { Pallet } from './Pallet';
 
-const BLOCK_SIZE = 20; // 10cm in real life
-const MAX_BLOCKS = 6;
-
-// Stage dimensions are based on real pallet dimensions
-// Pallet 180cm x 120cm. 10cm = 20px
-const STAGE_WIDTH = BLOCK_SIZE * 36;
-const STAGE_HEIGHT = BLOCK_SIZE * 24;
-const BLOCK_WIDTH = BLOCK_SIZE * 10;
-const BLOCK_HEIGHT = BLOCK_SIZE * 6;
-
-const BLOCK_BASE = {
-  x: 0,
-  y: 0,
-  width: BLOCK_WIDTH,
-  height: BLOCK_HEIGHT,
-};
-
-// @TODO add index to block as text; https://stackoverflow.com/questions/55227880/how-to-put-a-text-inside-a-rect-using-konva-js
 // @TODO collision detection; https://konvajs.org/docs/sandbox/Collision_Detection.html
 
 function Canvas() {
@@ -169,7 +160,6 @@ function Canvas() {
     <>
       <Controls
         amountOfBlocks={blocks.length}
-        maxBlocks={MAX_BLOCKS}
         isSelected={selected}
         {...{ onAdd, onAlignLeft, onRotate }}
       />
@@ -185,13 +175,10 @@ function Canvas() {
           transform: 'translate(-50%, -50%)',
         }}
       >
-        <Grid blockSize={BLOCK_SIZE} />
+        <Grid />
 
         <Layer>
-          <Pallet
-            stageHeight={STAGE_HEIGHT}
-            stageWidth={STAGE_WIDTH}
-          />
+          <Pallet />
 
           <Rect
             ref={shadowRef}

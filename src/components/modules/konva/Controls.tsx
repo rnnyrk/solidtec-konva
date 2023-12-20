@@ -1,8 +1,8 @@
+import { MAX_BLOCKS } from 'utils/constants';
 import { Button } from 'common/interaction/Button';
 
 export function Controls({
   amountOfBlocks,
-  maxBlocks,
   onAdd,
   onAlignLeft,
   onRotate,
@@ -12,7 +12,7 @@ export function Controls({
     <div className="absolute top-4 right-4 z-20 flex flex-col">
       <Button
         onClick={onAdd}
-        disabled={amountOfBlocks === maxBlocks}
+        disabled={amountOfBlocks === MAX_BLOCKS}
       >
         Add new
       </Button>
@@ -34,7 +34,6 @@ export function Controls({
 
 type ControlProps = {
   amountOfBlocks: number;
-  maxBlocks: number;
   onAdd: () => void;
   onAlignLeft: () => void;
   onRotate: () => void;
