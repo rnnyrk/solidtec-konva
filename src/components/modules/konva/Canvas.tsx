@@ -15,13 +15,12 @@ import { Controls } from './Controls';
 import { Grid } from './Grid';
 import { Pallet } from './Pallet';
 
-// @TODO collision detection; https://konvajs.org/docs/sandbox/Collision_Detection.html
-
 function Canvas() {
   const [blocks, setBlocks] = useState<BaseBlock[]>([BLOCK_BASE]);
   const [rotaters, setRotaters] = useState<number[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
 
+  const blockLayerRef = useRef<any | null>(null);
   const stageRef = useRef<any | null>(null);
   const shadowRef = useRef<any | null>(null);
 
@@ -124,6 +123,7 @@ function Canvas() {
     const index = Number(el.attrs.id.split('-')[1]);
     const isRotatedEl = rotaters.includes(index);
 
+    // Depending on the rotation, the bounding box is different
     let xPos = pos.x;
     if (xPos < 0) xPos = 0;
     if (!isRotatedEl && xPos > STAGE_WIDTH - BLOCK_WIDTH) {
@@ -156,6 +156,31 @@ function Canvas() {
     stageRef.current.batchDraw();
   }
 
+  function onCollision(event: KonvaEventObject<DragEvent>) {
+    const target = event.target;
+    const targetRect = event.target.getClientRect();
+
+    function haveIntersection(r1: any, r2: any) {
+      return !(
+        r2.x > r1.x + r1.width ||
+        r2.x + r2.width < r1.x ||
+        r2.y > r1.y + r1.height ||
+        r2.y + r2.height < r1.y
+      );
+    }
+
+    blockLayerRef.current.children.forEach((group: any) => {
+      // Do not check intersection with itself
+      if (group === target) return;
+
+      if (haveIntersection(group.getClientRect(), targetRect)) {
+        group.children[0].fill('red');
+      } else {
+        group.children[0].fill('white');
+      }
+    });
+  }
+
   return (
     <>
       <Controls
@@ -179,7 +204,6 @@ function Canvas() {
 
         <Layer>
           <Pallet />
-
           <Rect
             ref={shadowRef}
             x={0}
@@ -190,7 +214,12 @@ function Canvas() {
             opacity={0.6}
             visible={false}
           />
+        </Layer>
 
+        <Layer
+          ref={blockLayerRef}
+          onDragEnd={onCollision}
+        >
           {blocks.map((block, index) => {
             return (
               <Group
