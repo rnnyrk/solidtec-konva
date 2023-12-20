@@ -16,12 +16,12 @@ export function Controls({
       >
         Add new
       </Button>
-      {/* <Button
+      <Button
         onClick={onRotate}
         disabled={!isSelected}
       >
         Rotate
-      </Button> */}
+      </Button>
       <Button
         onClick={onAlignLeft}
         disabled={!isSelected}

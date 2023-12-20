@@ -24,7 +24,7 @@ const BLOCK_BASE = {
 };
 
 function Canvas() {
-  const [image] = useImage('/images/pallet-top.png');
+  const [palletImage] = useImage('/images/pallet-top.png');
 
   const [selected, setSelected] = useState<string | null>(null);
   const [blocks, setBlocks] = useState<BaseBlock[]>([BLOCK_BASE]);
@@ -131,9 +131,9 @@ function Canvas() {
         <Layer>
           <Rect
             ref={palletRef}
+            fillPatternImage={palletImage}
             width={BLOCK_SNAP_SIZE * 18}
             height={BLOCK_SNAP_SIZE * 12}
-            fillPatternImage={image}
             x={BLOCK_SNAP_SIZE * 30}
             y={BLOCK_SNAP_SIZE * 15}
           />
