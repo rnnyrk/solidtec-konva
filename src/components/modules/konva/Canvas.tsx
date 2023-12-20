@@ -28,9 +28,6 @@ function Canvas() {
   const stageRef = useRef<any | null>(null);
   const shadowRef = useRef<any | null>(null);
 
-  const width = window.innerWidth;
-  const height = window.innerHeight;
-
   function onAdd() {
     setBlocks([BLOCK_BASE, ...blocks]);
   }
@@ -69,7 +66,7 @@ function Canvas() {
     element.rotation(0);
     element.position({
       x: 0,
-      y: height / 2 - BLOCK_SIZE * 1.5,
+      y: STAGE_HEIGHT / 2 - BLOCK_HEIGHT / 2,
     });
 
     stageRef.current.batchDraw();
@@ -86,9 +83,11 @@ function Canvas() {
   function onDragEnd(event: KonvaEventObject<DragEvent>) {
     if (!shadowRef.current || !stageRef.current) return;
 
-    event.target.position({
-      x: Math.round(event.target.x() / BLOCK_SIZE) * BLOCK_SIZE,
-      y: Math.round(event.target.y() / BLOCK_SIZE) * BLOCK_SIZE,
+    const el = event.target;
+
+    el.position({
+      x: Math.round(el.x() / BLOCK_SIZE) * BLOCK_SIZE,
+      y: Math.round(el.y() / BLOCK_SIZE) * BLOCK_SIZE,
     });
 
     stageRef.current.batchDraw();
@@ -133,6 +132,7 @@ function Canvas() {
         isSelected={Boolean(selected)}
         {...{ onAdd, onAlignLeft, onRotate }}
       />
+
       <Stage
         width={STAGE_WIDTH}
         height={STAGE_HEIGHT}
@@ -169,7 +169,7 @@ function Canvas() {
                 {...block}
                 key={`block-${index}`}
                 id={`block-${index}`}
-                fill={selected === `block-${index}` ? '#89d5f5' : '#fff'}
+                fill={selected === `block-${index}` ? '#89d5f5' : '#ffffff'}
                 stroke="#ddd"
                 strokeWidth={1}
                 draggable
@@ -177,7 +177,6 @@ function Canvas() {
                 onDragEnd={onDragEnd}
                 onDragMove={onDragMove}
                 onClick={onActivate}
-                // onTap={onActivate}
               />
             );
           })}
