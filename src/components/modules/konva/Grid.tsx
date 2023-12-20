@@ -1,12 +1,5 @@
 import { Layer, Line } from 'react-konva';
 
-type Line = {
-  points: number[];
-  stroke: string;
-  strokeWidth: number;
-  opacity: number;
-};
-
 export function Grid({ blockSize }: GridProps) {
   const width = window.innerWidth;
   const height = window.innerHeight;
@@ -14,8 +7,8 @@ export function Grid({ blockSize }: GridProps) {
   const padding = blockSize;
   const opacity = 0.1;
 
-  const horizontalLines: Line[] = [];
-  const verticalLines: Line[] = [];
+  const horizontalLines: LineProps[] = [];
+  const verticalLines: LineProps[] = [];
 
   for (var i = 0; i < width / padding; i++) {
     horizontalLines.push({
@@ -56,6 +49,13 @@ export function Grid({ blockSize }: GridProps) {
     </Layer>
   );
 }
+
+type LineProps = {
+  points: number[];
+  stroke: string;
+  strokeWidth: number;
+  opacity: number;
+};
 
 type GridProps = {
   blockSize: number;

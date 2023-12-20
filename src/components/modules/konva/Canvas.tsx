@@ -6,26 +6,19 @@ import { Controls } from './Controls';
 import { Grid } from './Grid';
 import { Pallet } from './Pallet';
 
-type BaseBlock = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};
-
 const BLOCK_SIZE = 20;
 const MAX_BLOCKS = 6;
 
-const stageWidth = BLOCK_SIZE * 36;
-const stageHeight = BLOCK_SIZE * 24;
-const blockWidth = BLOCK_SIZE * 10;
-const blockHeight = BLOCK_SIZE * 6;
+const STAGE_WIDTH = BLOCK_SIZE * 36;
+const STAGE_HEIGHT = BLOCK_SIZE * 24;
+const BLOCK_WIDTH = BLOCK_SIZE * 10;
+const BLOCK_HEIGHT = BLOCK_SIZE * 6;
 
 const BLOCK_BASE = {
   x: 0,
   y: 0,
-  width: blockWidth,
-  height: blockHeight,
+  width: BLOCK_WIDTH,
+  height: BLOCK_HEIGHT,
 };
 
 function Canvas() {
@@ -105,11 +98,28 @@ function Canvas() {
   function onDragMove(event: KonvaEventObject<DragEvent>) {
     if (!shadowRef.current || !stageRef.current) return;
 
-    shadowRef.current.rotation(event.target.rotation());
+    // Position current element within bounding box of Pallet (stage)
+    const el = event.target;
+    const pos = el.getAbsolutePosition();
 
+    let xPos = pos.x;
+    if (xPos < 0) xPos = 0;
+    if (xPos > STAGE_WIDTH - BLOCK_WIDTH) xPos = STAGE_WIDTH - BLOCK_WIDTH;
+
+    let yPos = pos.y;
+    if (yPos < 0) yPos = 0;
+    if (yPos > STAGE_HEIGHT - BLOCK_HEIGHT) yPos = STAGE_HEIGHT - BLOCK_HEIGHT;
+
+    el.setAbsolutePosition({
+      x: xPos,
+      y: yPos,
+    });
+
+    // Position shadow element relative to the current element
+    shadowRef.current.rotation(el.rotation());
     shadowRef.current.position({
-      x: Math.round(event.target.x() / BLOCK_SIZE) * BLOCK_SIZE,
-      y: Math.round(event.target.y() / BLOCK_SIZE) * BLOCK_SIZE,
+      x: Math.round(xPos / BLOCK_SIZE) * BLOCK_SIZE,
+      y: Math.round(yPos / BLOCK_SIZE) * BLOCK_SIZE,
     });
 
     stageRef.current.batchDraw();
@@ -124,8 +134,8 @@ function Canvas() {
         {...{ onAdd, onAlignLeft, onRotate }}
       />
       <Stage
-        width={stageWidth}
-        height={stageHeight}
+        width={STAGE_WIDTH}
+        height={STAGE_HEIGHT}
         ref={stageRef}
         style={{
           position: 'absolute',
@@ -137,14 +147,17 @@ function Canvas() {
         <Grid blockSize={BLOCK_SIZE} />
 
         <Layer>
-          <Pallet blockSize={BLOCK_SIZE} />
+          <Pallet
+            stageHeight={STAGE_HEIGHT}
+            stageWidth={STAGE_WIDTH}
+          />
 
           <Rect
             ref={shadowRef}
             x={0}
             y={0}
-            width={blockWidth}
-            height={blockHeight}
+            width={BLOCK_WIDTH}
+            height={BLOCK_HEIGHT}
             fill="#89d5f5"
             opacity={0.6}
             visible={false}
@@ -173,5 +186,12 @@ function Canvas() {
     </>
   );
 }
+
+type BaseBlock = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
 
 export default Canvas;
