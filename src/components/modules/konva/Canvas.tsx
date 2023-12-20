@@ -1,10 +1,10 @@
 import { useRef, useState } from 'react';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { Layer, Rect, Stage } from 'react-konva';
-import useImage from 'use-image';
 
 import { Controls } from './Controls';
 import { Grid } from './Grid';
+import { Pallet } from './Pallet';
 
 type BaseBlock = {
   x: number;
@@ -13,25 +13,27 @@ type BaseBlock = {
   height: number;
 };
 
-const BLOCK_SNAP_SIZE = 30;
+const BLOCK_SIZE = 20;
 const MAX_BLOCKS = 6;
+
+const stageWidth = BLOCK_SIZE * 36;
+const stageHeight = BLOCK_SIZE * 24;
+const blockWidth = BLOCK_SIZE * 10;
+const blockHeight = BLOCK_SIZE * 6;
 
 const BLOCK_BASE = {
   x: 0,
   y: 0,
-  width: BLOCK_SNAP_SIZE * 6,
-  height: BLOCK_SNAP_SIZE * 3,
+  width: blockWidth,
+  height: blockHeight,
 };
 
 function Canvas() {
-  const [palletImage] = useImage('/images/pallet-top.png');
-
   const [selected, setSelected] = useState<string | null>(null);
   const [blocks, setBlocks] = useState<BaseBlock[]>([BLOCK_BASE]);
 
   const stageRef = useRef<any | null>(null);
   const shadowRef = useRef<any | null>(null);
-  const palletRef = useRef<any | null>(null);
 
   const width = window.innerWidth;
   const height = window.innerHeight;
@@ -74,7 +76,7 @@ function Canvas() {
     element.rotation(0);
     element.position({
       x: 0,
-      y: height / 2 - BLOCK_SNAP_SIZE * 1.5,
+      y: height / 2 - BLOCK_SIZE * 1.5,
     });
 
     stageRef.current.batchDraw();
@@ -92,8 +94,8 @@ function Canvas() {
     if (!shadowRef.current || !stageRef.current) return;
 
     event.target.position({
-      x: Math.round(event.target.x() / BLOCK_SNAP_SIZE) * BLOCK_SNAP_SIZE,
-      y: Math.round(event.target.y() / BLOCK_SNAP_SIZE) * BLOCK_SNAP_SIZE,
+      x: Math.round(event.target.x() / BLOCK_SIZE) * BLOCK_SIZE,
+      y: Math.round(event.target.y() / BLOCK_SIZE) * BLOCK_SIZE,
     });
 
     stageRef.current.batchDraw();
@@ -106,8 +108,8 @@ function Canvas() {
     shadowRef.current.rotation(event.target.rotation());
 
     shadowRef.current.position({
-      x: Math.round(event.target.x() / BLOCK_SNAP_SIZE) * BLOCK_SNAP_SIZE,
-      y: Math.round(event.target.y() / BLOCK_SNAP_SIZE) * BLOCK_SNAP_SIZE,
+      x: Math.round(event.target.x() / BLOCK_SIZE) * BLOCK_SIZE,
+      y: Math.round(event.target.y() / BLOCK_SIZE) * BLOCK_SIZE,
     });
 
     stageRef.current.batchDraw();
@@ -122,28 +124,27 @@ function Canvas() {
         {...{ onAdd, onAlignLeft, onRotate }}
       />
       <Stage
-        width={width}
-        height={height}
+        width={stageWidth}
+        height={stageHeight}
         ref={stageRef}
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+        }}
       >
-        <Grid blockSnapSize={BLOCK_SNAP_SIZE} />
+        <Grid blockSize={BLOCK_SIZE} />
 
         <Layer>
-          <Rect
-            ref={palletRef}
-            fillPatternImage={palletImage}
-            width={BLOCK_SNAP_SIZE * 18}
-            height={BLOCK_SNAP_SIZE * 12}
-            x={BLOCK_SNAP_SIZE * 30}
-            y={BLOCK_SNAP_SIZE * 15}
-          />
+          <Pallet blockSize={BLOCK_SIZE} />
 
           <Rect
             ref={shadowRef}
             x={0}
             y={0}
-            width={BLOCK_SNAP_SIZE * 6}
-            height={BLOCK_SNAP_SIZE * 3}
+            width={blockWidth}
+            height={blockHeight}
             fill="#89d5f5"
             opacity={0.6}
             visible={false}

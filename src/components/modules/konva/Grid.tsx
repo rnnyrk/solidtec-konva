@@ -7,11 +7,11 @@ type Line = {
   opacity: number;
 };
 
-export function Grid({ blockSnapSize }: { blockSnapSize: number }) {
+export function Grid({ blockSize }: GridProps) {
   const width = window.innerWidth;
   const height = window.innerHeight;
 
-  const padding = blockSnapSize;
+  const padding = blockSize;
   const opacity = 0.1;
 
   const horizontalLines: Line[] = [];
@@ -56,3 +56,7 @@ export function Grid({ blockSnapSize }: { blockSnapSize: number }) {
     </Layer>
   );
 }
+
+type GridProps = {
+  blockSize: number;
+};
