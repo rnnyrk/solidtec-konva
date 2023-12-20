@@ -27,8 +27,9 @@ const BLOCK_BASE = {
 // @TODO collision detection; https://konvajs.org/docs/sandbox/Collision_Detection.html
 
 function Canvas() {
-  const [selected, setSelected] = useState<number | null>(null);
   const [blocks, setBlocks] = useState<BaseBlock[]>([BLOCK_BASE]);
+  const [rotaters, setRotaters] = useState<number[]>([]);
+  const [selected, setSelected] = useState<number | null>(null);
 
   const stageRef = useRef<any | null>(null);
   const shadowRef = useRef<any | null>(null);
@@ -49,16 +50,39 @@ function Canvas() {
   function onRotate() {
     if (!stageRef.current || selected === null) return;
 
-    const groupId = `#group-${selected}`;
-    const element = stageRef.current.find(groupId)[0];
+    const textEl = stageRef.current.find(`#text-${selected}`)[0];
+    const blockEl = stageRef.current.find(`#block-${selected}`)[0];
 
-    const currentRotation = element.rotation();
-    if (currentRotation === 90) {
-      element.rotation(0);
-      return;
+    if (rotaters.includes(selected)) {
+      // Reset element to original dimensions
+      blockEl.setAttrs({
+        width: BLOCK_WIDTH,
+        height: BLOCK_HEIGHT,
+      });
+
+      textEl.setAttrs({
+        width: BLOCK_WIDTH,
+        height: BLOCK_HEIGHT,
+        y: textEl.y() - 36,
+      });
+
+      setRotaters(rotaters.filter((rotater) => rotater !== selected));
+    } else {
+      // Flip width and height
+      blockEl.setAttrs({
+        width: BLOCK_HEIGHT,
+        height: BLOCK_WIDTH,
+      });
+
+      textEl.setAttrs({
+        width: BLOCK_HEIGHT,
+        height: BLOCK_WIDTH,
+        y: textEl.y() + 36,
+      });
+
+      setRotaters([...rotaters, selected]);
     }
 
-    stageRef.current.find(groupId)[0].rotate(90);
     stageRef.current.batchDraw();
   }
 
@@ -106,21 +130,33 @@ function Canvas() {
     const el = event.target;
     const pos = el.getAbsolutePosition();
 
+    const index = Number(el.attrs.id.split('-')[1]);
+    const isRotatedEl = rotaters.includes(index);
+
     let xPos = pos.x;
     if (xPos < 0) xPos = 0;
-    if (xPos > STAGE_WIDTH - BLOCK_WIDTH) xPos = STAGE_WIDTH - BLOCK_WIDTH;
+    if (!isRotatedEl && xPos > STAGE_WIDTH - BLOCK_WIDTH) {
+      xPos = STAGE_WIDTH - BLOCK_WIDTH;
+    } else if (isRotatedEl && xPos > STAGE_WIDTH - BLOCK_HEIGHT) {
+      xPos = STAGE_WIDTH - BLOCK_HEIGHT;
+    }
 
     let yPos = pos.y;
     if (yPos < 0) yPos = 0;
-    if (yPos > STAGE_HEIGHT - BLOCK_HEIGHT) yPos = STAGE_HEIGHT - BLOCK_HEIGHT;
+    if (!isRotatedEl && yPos > STAGE_HEIGHT - BLOCK_HEIGHT) {
+      yPos = STAGE_HEIGHT - BLOCK_HEIGHT;
+    } else if (isRotatedEl && yPos > STAGE_HEIGHT - BLOCK_WIDTH) {
+      yPos = STAGE_HEIGHT - BLOCK_WIDTH;
+    }
 
     el.setAbsolutePosition({
       x: xPos,
       y: yPos,
     });
 
-    // Position shadow element relative to the current element
-    shadowRef.current.rotation(el.rotation());
+    // Match shadow element relative to the current element
+    shadowRef.current.width(isRotatedEl ? BLOCK_HEIGHT : BLOCK_WIDTH);
+    shadowRef.current.height(isRotatedEl ? BLOCK_WIDTH : BLOCK_HEIGHT);
     shadowRef.current.position({
       x: Math.round(xPos / BLOCK_SIZE) * BLOCK_SIZE,
       y: Math.round(yPos / BLOCK_SIZE) * BLOCK_SIZE,
@@ -179,6 +215,7 @@ function Canvas() {
                 onDragEnd={onDragEnd}
                 onDragMove={onDragMove}
                 onClick={() => onActivate(index)}
+                onTap={() => onActivate(index)}
               >
                 <Rect
                   {...block}
@@ -193,8 +230,8 @@ function Canvas() {
                   y={block.y + 36}
                   key={`text-${index}`}
                   id={`text-${index}`}
-                  fontSize={60}
                   text={`${index + 1}`}
+                  fontSize={60}
                   align="center"
                 />
               </Group>
