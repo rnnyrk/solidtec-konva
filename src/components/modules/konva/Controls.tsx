@@ -1,6 +1,8 @@
+import { UseFormReset } from 'react-hook-form';
+
 import { useModal } from 'hooks';
 import { useBlocks, useBoardStore } from 'store/board';
-import { MAX_BLOCKS } from 'utils/constants';
+import { BLOCK_BASE, BLOCK_SIZE, MAX_BLOCKS, STAGE_WIDTH } from 'utils/constants';
 import { btnClass, Button } from 'common/interaction/Button';
 
 import { useKonvaContext } from './KonvaContext';
@@ -11,7 +13,8 @@ export function Controls({
   onAdd,
   onAlignLeft,
   onRotate,
-  isSelected,
+  selected,
+  setSelected,
 }: ControlProps) {
   const konvaContext = useKonvaContext();
   const [isOpen, onOpenModal, onCloseModal] = useModal();
@@ -20,25 +23,40 @@ export function Controls({
   const blocks = useBlocks();
 
   function onSetActiveLayer(index: number) {
+    setSelected(null);
     setCurrentLayer(index);
   }
 
-  function onNewLayer(data: NewLayerValues) {
+  function onNewLayer(data: NewLayerValues, reset: UseFormReset<NewLayerValues>) {
     if (!konvaContext || !konvaContext.stageRef.current) return;
 
-    // @TODO check values from modal
-    console.log({ data });
+    let newBlocks = [...blocks];
 
-    const duplicateBlocks = [...blocks];
+    if (data.duplicate) {
+      const copyBlocks = [...layers[currentLayerIndex].blocks];
+
+      // @TODO flip the blocks x and y coordinates
+      if (data.flip) {
+        // copyBlocks.forEach((block) => {
+        //   block.x = STAGE_WIDTH - block.x - BLOCK_SIZE;
+        // });
+      }
+
+      newBlocks = [...copyBlocks];
+    } else {
+      newBlocks = [BLOCK_BASE];
+    }
+
     setLayers([
       ...layers,
       {
         index: layers.length,
-        blocks: duplicateBlocks,
+        blocks: newBlocks,
       },
     ]);
 
     onCloseModal();
+    reset();
   }
 
   return (
@@ -57,15 +75,18 @@ export function Controls({
             </Button>
           );
         })}
-        <NewLayer
-          title="Nieuwe laag toevoegen"
-          onCallback={onNewLayer}
-          onClose={onCloseModal}
-          onOpen={onOpenModal}
-          isOpen={isOpen}
-        >
-          <div className={btnClass({ variant: 'secondary', size: 'xl' })}>Nieuwe laag</div>
-        </NewLayer>
+        {layers.length < 4 && (
+          <NewLayer
+            title="Nieuwe laag toevoegen"
+            description="Dupliceer de huidige laag of maak een blanco nieuwe laag aan door niets te selecteren."
+            onCallback={onNewLayer}
+            onClose={onCloseModal}
+            onOpen={onOpenModal}
+            isOpen={isOpen}
+          >
+            <div className={btnClass({ variant: 'secondary', size: 'xl' })}>Nieuwe laag</div>
+          </NewLayer>
+        )}
       </div>
 
       <div className="absolute top-4 right-4 z-20 flex flex-col">
@@ -79,7 +100,7 @@ export function Controls({
         </Button>
         <Button
           onClick={onRotate}
-          disabled={isSelected === null}
+          disabled={selected === null}
           size="xl"
           className="mb-2"
         >
@@ -88,7 +109,7 @@ export function Controls({
         <Button
           onClick={onAlignLeft}
           size="xl"
-          disabled={isSelected === null}
+          disabled={selected === null}
         >
           Align left
         </Button>
@@ -102,5 +123,6 @@ type ControlProps = {
   onAdd: () => void;
   onAlignLeft: () => void;
   onRotate: () => void;
-  isSelected: number | null;
+  selected: number | null;
+  setSelected: (index: number | null) => void;
 };

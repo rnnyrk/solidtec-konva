@@ -8,7 +8,7 @@ export const btnClass = ({
   cn(
     'py-2 px-4 rounded',
     'text-white font-bold transition-colors	duration-300',
-    'disabled:bg-slate-200 disabled:cursor-not-allowed',
+    'disabled:bg-slate-300 disabled:text-slate-500 disabled:border-slate-200 disabled:cursor-not-allowed',
     className,
     {
       'bg-primary border-2 border-primary hover:bg-primaryDark hover:border-primaryDark':

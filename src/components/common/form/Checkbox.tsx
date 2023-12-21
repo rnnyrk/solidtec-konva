@@ -32,6 +32,7 @@ export function Checkbox({
         disabled={field.disabled}
         ref={field.ref}
         name={field.name}
+        value={field.value}
         onCheckedChange={(checked) => field.onChange(checked)}
       />
       <label
@@ -66,7 +67,7 @@ const CheckboxPrimivite = React.forwardRef<
   <CheckboxRadixPrimitive.Root
     ref={ref}
     className={cn(
-      'peer h-6 w-6 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground',
+      'peer h-6 w-6 shrink-0 rounded-sm border-2 border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground',
       className,
       {
         'w-8 h-8': size === 'xl',
@@ -77,11 +78,7 @@ const CheckboxPrimivite = React.forwardRef<
     <CheckboxRadixPrimitive.Indicator
       className={cn('flex items-center justify-center text-current')}
     >
-      <CheckSvg
-        className={cn('h-4 w-4 fill-white', {
-          'w-6 h-6 text-lg': size === 'xl',
-        })}
-      />
+      <CheckSvg className={cn('h-4 w-4 fill-white')} />
     </CheckboxRadixPrimitive.Indicator>
   </CheckboxRadixPrimitive.Root>
 ));

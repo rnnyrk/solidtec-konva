@@ -1,4 +1,5 @@
-import { useForm } from 'react-hook-form';
+import { useEffect } from 'react';
+import { useForm, UseFormReset } from 'react-hook-form';
 
 import { Checkbox } from 'common/form/Checkbox';
 import { Button } from 'common/interaction/Button';
@@ -29,11 +30,22 @@ export function NewLayer({
     control,
     handleSubmit,
     formState: { errors },
+    setValue,
     watch,
+    reset,
   } = useForm<NewLayerValues>();
 
   const flipEnabled = watch('flip');
   const duplicateEnabled = watch('duplicate');
+
+  useEffect(() => {
+    if (
+      (!duplicateEnabled && flipEnabled) ||
+      (duplicateEnabled && typeof flipEnabled === 'undefined')
+    ) {
+      setValue('flip', false);
+    }
+  }, [duplicateEnabled, flipEnabled]);
 
   return (
     <Dialog open={isOpen}>
@@ -51,23 +63,24 @@ export function NewLayer({
 
         <form
           className="pt-4 pb-8 px-8"
-          onSubmit={handleSubmit(onCallback)}
+          onSubmit={handleSubmit((data) => onCallback(data, reset))}
         >
           <Checkbox
             control={control}
             id="duplicate"
-            label="Dupliceer laag 1"
-            disabled={flipEnabled}
+            label="Dupliceer huidige laag"
             size="xl"
+            checked={duplicateEnabled}
             wrapperClassName="mb-8"
           />
 
           <Checkbox
             control={control}
             id="flip"
-            label="Flip laag 1"
+            label="Flip gedupliceerde laag"
             size="xl"
-            disabled={duplicateEnabled}
+            checked={flipEnabled}
+            disabled={!duplicateEnabled}
           />
 
           <Button
@@ -87,7 +100,7 @@ export function NewLayer({
 type NewLayerProps = {
   children: React.ReactNode;
   description?: string;
-  onCallback: (data: NewLayerValues) => void;
+  onCallback: (data: NewLayerValues, reset: UseFormReset<NewLayerValues>) => void;
   onClose: () => void;
   onOpen: (modalId?: string) => void;
   isOpen: boolean;

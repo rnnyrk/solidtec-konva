@@ -224,8 +224,7 @@ function Canvas() {
     >
       <Controls
         amountOfBlocks={blocks.length}
-        isSelected={selected}
-        {...{ onAdd, onAlignLeft, onRotate }}
+        {...{ onAdd, onAlignLeft, onRotate, selected, setSelected }}
       />
 
       <Stage
