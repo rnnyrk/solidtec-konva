@@ -7,12 +7,17 @@ import { BLOCK_HEIGHT, BLOCK_WIDTH, STAGE_HEIGHT, STAGE_WIDTH } from 'utils/cons
 
 import { Blocks } from './Blocks';
 import { Controls } from './Controls';
-import { Grid } from './Grid';
+// import { Grid } from './Grid';
 import { KonvaContext } from './KonvaContext';
 import { Layers } from './Layers';
 import { Pallet } from './Pallet';
 
 const theme = getTheme();
+
+// @TODO keyboard controls +1 -1
+// @TODO flip on y axis
+// @TODO BLOCK_SIZE margin on collision
+// @TODO use and change order on blocks
 
 function Canvas() {
   const [selected, setSelected] = useState<number | null>(null);
@@ -70,8 +75,7 @@ function Canvas() {
           transform: 'translate(-50%, -50%)',
         }}
       >
-        <Grid />
-
+        {/* <Grid /> */}
         <Layer>
           <Pallet />
           <Rect

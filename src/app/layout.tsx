@@ -8,14 +8,14 @@ import { RootLayout } from 'modules/layouts/RootLayout';
 
 const inter = Inter({ subsets: ['latin'] });
 
-const siteName = 'Ronny Rook';
+const siteName = 'Solidtec';
 
 export const metadata = {
   title: {
-    default: `Konva tryout | ${siteName}`,
+    default: `Solidtec | ${siteName}`,
     template: `%s | ${siteName}`,
   },
-  description: 'Javascript developer from Amsterdam',
+  description: 'Solidtec pallet organizer',
   icons: {
     icon: '/images/favicon/favicon-32x32.png',
     shortcut: '/images/favicon/favicon.ico',
@@ -33,7 +33,10 @@ const Layout = ({ children }: Props) => {
   return (
     <html
       lang="en"
-      className={cn('text-black bg-white dark:text-white dark:bg-[#111111]', inter.className)}
+      className={cn(
+        'text-black bg-white dark:text-white dark:bg-solidtecBlackAccent',
+        inter.className,
+      )}
     >
       <head />
       <RootLayout>{children}</RootLayout>
