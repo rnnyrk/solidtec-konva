@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { Group, Layer, Rect, Stage, Text } from 'react-konva';
 
-import { useBoardStore } from 'store/board';
+import { useBlocks, useBoardStore } from 'store/board';
 import {
   BLOCK_BASE,
   BLOCK_HEIGHT,
@@ -14,12 +14,12 @@ import {
 
 import { Controls } from './Controls';
 import { Grid } from './Grid';
+import { KonvaContext } from './KonvaContext';
 import { Pallet } from './Pallet';
 
 function Canvas() {
   const { currentLayerIndex, layers, setLayers } = useBoardStore();
-  const currentLayer = layers[currentLayerIndex];
-  const blocks = currentLayer.blocks;
+  const blocks = useBlocks();
 
   const [rotaters, setRotaters] = useState<number[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
@@ -42,25 +42,6 @@ function Canvas() {
     }
 
     setSelected(index);
-  }
-
-  function onDuplicateLayer() {
-    if (!stageRef.current) return;
-
-    const copiedBlocks = blocks.map((block, index) => {
-      const groupId = `#group-${index}`;
-      const el = stageRef.current.find(groupId)[0];
-      return {
-        ...block,
-        x: el.x(),
-        y: el.y(),
-        width: el.width(),
-        height: el.height(),
-      };
-    });
-
-    // @TODO duplicate blocks to new layer
-    // setBlocks([...copiedBlocks]);
   }
 
   function onRotate() {
@@ -216,11 +197,15 @@ function Canvas() {
   }
 
   return (
-    <>
+    <KonvaContext.Provider
+      value={{
+        stageRef,
+      }}
+    >
       <Controls
         amountOfBlocks={blocks.length}
         isSelected={selected}
-        {...{ onAdd, onAlignLeft, onDuplicateLayer, onRotate }}
+        {...{ onAdd, onAlignLeft, onRotate }}
       />
 
       <Stage
@@ -294,7 +279,7 @@ function Canvas() {
           })}
         </Layer>
       </Stage>
-    </>
+    </KonvaContext.Provider>
   );
 }
 

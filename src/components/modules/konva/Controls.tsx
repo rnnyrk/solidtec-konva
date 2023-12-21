@@ -1,18 +1,73 @@
+import { useBlocks, useBoardStore } from 'store/board';
 import { MAX_BLOCKS } from 'utils/constants';
 import { Button } from 'common/interaction/Button';
+
+import { useKonvaContext } from './KonvaContext';
 
 export function Controls({
   amountOfBlocks,
   onAdd,
   onAlignLeft,
-  onDuplicateLayer,
   onRotate,
   isSelected,
 }: ControlProps) {
+  const konvaContext = useKonvaContext();
+
+  const { currentLayerIndex, setCurrentLayer, layers, setLayers } = useBoardStore();
+  const blocks = useBlocks();
+
+  function onSetActiveLayer(index: number) {
+    setCurrentLayer(index);
+
+    console.log({ layers });
+  }
+
+  function onDuplicateLayer() {
+    if (!konvaContext || !konvaContext.stageRef.current) return;
+
+    const copiedBlocks = blocks.map((block, index) => {
+      const groupId = `#group-${index}`;
+      const el = konvaContext.stageRef.current.find(groupId)[0];
+      return {
+        ...block,
+        x: el.x(),
+        y: el.y(),
+        width: el.width(),
+        height: el.height(),
+      };
+    });
+
+    setLayers([
+      ...layers,
+      {
+        index: layers.length,
+        blocks: copiedBlocks,
+      },
+    ]);
+  }
+
   return (
     <>
-      <div className="absolute top-4 left-4 z-20 flex flex-col">
-        <Button onClick={onDuplicateLayer}>Duplicate layer</Button>
+      <div className="absolute top-4 left-4 z-20 flex">
+        {layers.map((layer) => {
+          const index = layer.index;
+          return (
+            <Button
+              key={`layer-button-${index}`}
+              className="mr-2"
+              onClick={() => onSetActiveLayer(index)}
+              variant={index === currentLayerIndex ? 'primary' : 'secondary'}
+            >
+              Layer {index + 1}
+            </Button>
+          );
+        })}
+        <Button
+          variant="secondary"
+          onClick={onDuplicateLayer}
+        >
+          Duplicate
+        </Button>
       </div>
 
       <div className="absolute top-4 right-4 z-20 flex flex-col">
@@ -43,7 +98,6 @@ type ControlProps = {
   amountOfBlocks: number;
   onAdd: () => void;
   onAlignLeft: () => void;
-  onDuplicateLayer: () => void;
   onRotate: () => void;
   isSelected: number | null;
 };
