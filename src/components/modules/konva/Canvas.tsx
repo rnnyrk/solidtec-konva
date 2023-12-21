@@ -21,7 +21,6 @@ function Canvas() {
   const { currentLayerIndex, layers, setLayers } = useBoardStore();
   const blocks = useBlocks();
 
-  const [rotaters, setRotaters] = useState<number[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
 
   const blockLayerRef = useRef<any | null>(null);
@@ -51,40 +50,33 @@ function Canvas() {
     const textEl = stageRef.current.find(`#text[${currentLayerIndex}]-${selected}`)[0];
     const blockEl = stageRef.current.find(`#block[${currentLayerIndex}]-${selected}`)[0];
 
+    const newBlocks = [...blocks];
+    const currentBlock = newBlocks[selected];
+
+    // Reset element to initial value or update to rotated value
     let newSizes = { width: BLOCK_WIDTH, height: BLOCK_HEIGHT };
+    let rotated = currentBlock.rotated;
 
-    // @TODO move rotaters to store
-
-    if (rotaters.includes(selected)) {
-      // Reset element to original dimensions
-      groupEl.setAttrs({ ...newSizes });
-      blockEl.setAttrs({ ...newSizes });
-      textEl.setAttrs({
-        ...newSizes,
-        y: textEl.y() - 36,
-      });
-
-      setRotaters(rotaters.filter((rotater) => rotater !== selected));
+    if (rotated) {
+      rotated = false;
     } else {
-      // Flip width and height
+      // Flip width and height and set rotated
+      rotated = true;
       newSizes = { width: BLOCK_HEIGHT, height: BLOCK_WIDTH };
-
-      groupEl.setAttrs({ ...newSizes });
-      blockEl.setAttrs({ ...newSizes });
-      textEl.setAttrs({
-        ...newSizes,
-        height: BLOCK_HEIGHT - 36,
-        y: textEl.y() + 36,
-      });
-
-      setRotaters([...rotaters, selected]);
     }
 
-    // Update width and height of the block in store after rotating
-    const newBlocks = [...blocks];
-    newBlocks[selected] = {
-      ...newBlocks[selected],
+    groupEl.setAttrs({ ...newSizes });
+    blockEl.setAttrs({ ...newSizes });
+    textEl.setAttrs({
       ...newSizes,
+      height: BLOCK_HEIGHT - 36,
+    });
+
+    // Update width and height of the block in store after rotating
+    newBlocks[selected] = {
+      ...currentBlock,
+      ...newSizes,
+      rotated,
     };
 
     const newLayers = [...layers];
@@ -99,7 +91,7 @@ function Canvas() {
 
     const groupId = `#group[${currentLayerIndex}]-${selected}`;
     const el = stageRef.current.find(groupId)[0];
-    const isRotatedEl = rotaters.includes(selected);
+    const isRotatedEl = blocks[selected].rotated;
 
     let yPos = STAGE_HEIGHT / 2 - BLOCK_HEIGHT / 2;
     if (isRotatedEl) {
@@ -160,7 +152,7 @@ function Canvas() {
     const pos = el.getAbsolutePosition();
 
     const elId = Number(el.attrs.id.split('-')[1]);
-    const isRotatedEl = rotaters.includes(elId);
+    const isRotatedEl = blocks[elId].rotated;
 
     // Depending on the rotation, the bounding box is different
     let xPos = pos.x;
@@ -292,7 +284,7 @@ function Canvas() {
                   width={block.width}
                   height={block.height - 36}
                   x={0}
-                  y={0 + 36}
+                  y={(block.rotated ? 36 : 0) + 36}
                   key={`text[${currentLayerIndex}]-${index}`}
                   id={`text[${currentLayerIndex}]-${index}`}
                   text={`${index + 1}`}
