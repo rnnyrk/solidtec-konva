@@ -18,30 +18,17 @@ export function Controls({
 
   function onSetActiveLayer(index: number) {
     setCurrentLayer(index);
-
-    console.log({ layers });
   }
 
   function onDuplicateLayer() {
     if (!konvaContext || !konvaContext.stageRef.current) return;
 
-    const copiedBlocks = blocks.map((block, index) => {
-      const groupId = `#group-${index}`;
-      const el = konvaContext.stageRef.current.find(groupId)[0];
-      return {
-        ...block,
-        x: el.x(),
-        y: el.y(),
-        width: el.width(),
-        height: el.height(),
-      };
-    });
-
+    const duplicateBlocks = [...blocks];
     setLayers([
       ...layers,
       {
         index: layers.length,
-        blocks: copiedBlocks,
+        blocks: duplicateBlocks,
       },
     ]);
   }

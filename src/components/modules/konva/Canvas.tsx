@@ -47,14 +47,16 @@ function Canvas() {
   function onRotate() {
     if (!stageRef.current || selected === null) return;
 
-    const groupEl = stageRef.current.find(`#group-${selected}`)[0];
-    const textEl = stageRef.current.find(`#text-${selected}`)[0];
-    const blockEl = stageRef.current.find(`#block-${selected}`)[0];
+    const groupEl = stageRef.current.find(`#group[${currentLayerIndex}]-${selected}`)[0];
+    const textEl = stageRef.current.find(`#text[${currentLayerIndex}]-${selected}`)[0];
+    const blockEl = stageRef.current.find(`#block[${currentLayerIndex}]-${selected}`)[0];
+
+    let newSizes = { width: BLOCK_WIDTH, height: BLOCK_HEIGHT };
+
+    // @TODO move rotaters to store
 
     if (rotaters.includes(selected)) {
       // Reset element to original dimensions
-      const newSizes = { width: BLOCK_WIDTH, height: BLOCK_HEIGHT };
-
       groupEl.setAttrs({ ...newSizes });
       blockEl.setAttrs({ ...newSizes });
       textEl.setAttrs({
@@ -65,7 +67,7 @@ function Canvas() {
       setRotaters(rotaters.filter((rotater) => rotater !== selected));
     } else {
       // Flip width and height
-      const newSizes = { width: BLOCK_HEIGHT, height: BLOCK_WIDTH };
+      newSizes = { width: BLOCK_HEIGHT, height: BLOCK_WIDTH };
 
       groupEl.setAttrs({ ...newSizes });
       blockEl.setAttrs({ ...newSizes });
@@ -78,13 +80,24 @@ function Canvas() {
       setRotaters([...rotaters, selected]);
     }
 
+    // Update width and height of the block in store after rotating
+    const newBlocks = [...blocks];
+    newBlocks[selected] = {
+      ...newBlocks[selected],
+      ...newSizes,
+    };
+
+    const newLayers = [...layers];
+    newLayers[currentLayerIndex].blocks = newBlocks;
+    setLayers(newLayers);
+
     stageRef.current.batchDraw();
   }
 
   function onAlignLeft() {
     if (!stageRef.current || selected === null) return;
 
-    const groupId = `#group-${selected}`;
+    const groupId = `#group[${currentLayerIndex}]-${selected}`;
     const el = stageRef.current.find(groupId)[0];
     const isRotatedEl = rotaters.includes(selected);
 
@@ -93,7 +106,6 @@ function Canvas() {
       yPos = STAGE_HEIGHT / 2 - BLOCK_WIDTH / 2;
     }
 
-    el.rotation(0);
     el.position({
       x: 0,
       y: yPos,
@@ -114,6 +126,7 @@ function Canvas() {
     if (!shadowRef.current || !stageRef.current) return;
 
     const el = event.target;
+    const elId = Number(el.attrs.id.split('-')[1]);
 
     const xPos = Math.round(el.x() / BLOCK_SIZE) * BLOCK_SIZE;
     const yPos = Math.round(el.y() / BLOCK_SIZE) * BLOCK_SIZE;
@@ -122,6 +135,18 @@ function Canvas() {
       x: xPos,
       y: yPos,
     });
+
+    // Update position of the block in store after dragging
+    const newBlocks = [...blocks];
+    newBlocks[elId] = {
+      ...newBlocks[elId],
+      x: xPos,
+      y: yPos,
+    };
+
+    const newLayers = [...layers];
+    newLayers[currentLayerIndex].blocks = newBlocks;
+    setLayers(newLayers);
 
     stageRef.current.batchDraw();
     shadowRef.current.hide();
@@ -243,8 +268,8 @@ function Canvas() {
             return (
               <Group
                 {...block}
-                key={`group-${index}`}
-                id={`group-${index}`}
+                key={`group[${currentLayerIndex}]-${index}`}
+                id={`group[${currentLayerIndex}]-${index}`}
                 draggable
                 onDragStart={onDragStart}
                 onDragEnd={onDragEnd}
@@ -257,8 +282,8 @@ function Canvas() {
                   height={block.height}
                   x={0}
                   y={0}
-                  key={`block-${index}`}
-                  id={`block-${index}`}
+                  key={`block[${currentLayerIndex}]-${index}`}
+                  id={`block[${currentLayerIndex}]-${index}`}
                   fill={selected === index ? '#89d5f5' : '#ffffff'}
                   stroke="#ddd"
                   strokeWidth={1}
@@ -268,8 +293,8 @@ function Canvas() {
                   height={block.height - 36}
                   x={0}
                   y={0 + 36}
-                  key={`text-${index}`}
-                  id={`text-${index}`}
+                  key={`text[${currentLayerIndex}]-${index}`}
+                  id={`text[${currentLayerIndex}]-${index}`}
                   text={`${index + 1}`}
                   fontSize={60}
                   align="center"
