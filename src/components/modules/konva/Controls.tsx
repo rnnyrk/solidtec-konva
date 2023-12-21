@@ -4,18 +4,19 @@ import { Button } from 'common/interaction/Button';
 
 import { useKonvaContext } from './KonvaContext';
 
-export function Controls({ amountOfBlocks, selected }: ControlsProps) {
-  const konvaContext = useKonvaContext();
-  const stageRef = konvaContext?.stageRef;
+export function Controls() {
+  const { stageRef, selected, setSelected } = useKonvaContext()!;
 
   const { currentLayerIndex, layers, setLayers } = useBoardStore();
   const blocks = useBlocks();
 
   function onAddBlock() {
     const newLayers = [...layers];
-    newLayers[currentLayerIndex].blocks = [...blocks, BLOCK_BASE];
+    const newBlocks = [...blocks, BLOCK_BASE];
+    newLayers[currentLayerIndex].blocks = newBlocks;
 
     setLayers(newLayers);
+    setSelected(newBlocks.length - 1);
   }
 
   function onAlignLeft() {
@@ -85,7 +86,7 @@ export function Controls({ amountOfBlocks, selected }: ControlsProps) {
     <div className="absolute top-4 right-4 z-20 flex flex-col">
       <Button
         onClick={onAddBlock}
-        disabled={amountOfBlocks === MAX_BLOCKS}
+        disabled={blocks.length === MAX_BLOCKS}
         size="xl"
         className="mb-2"
       >
@@ -109,8 +110,3 @@ export function Controls({ amountOfBlocks, selected }: ControlsProps) {
     </div>
   );
 }
-
-type ControlsProps = {
-  amountOfBlocks: number;
-  selected: number | null;
-};

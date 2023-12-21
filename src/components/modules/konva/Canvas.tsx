@@ -2,7 +2,6 @@ import { useRef, useState } from 'react';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { Layer, Rect, Stage } from 'react-konva';
 
-import { useBlocks } from 'store/board';
 import { getTheme } from 'utils';
 import { BLOCK_HEIGHT, BLOCK_WIDTH, STAGE_HEIGHT, STAGE_WIDTH } from 'utils/constants';
 
@@ -16,8 +15,6 @@ import { Pallet } from './Pallet';
 const theme = getTheme();
 
 function Canvas() {
-  const blocks = useBlocks();
-
   const [selected, setSelected] = useState<number | null>(null);
 
   const blockLayerRef = useRef<any | null>(null);
@@ -55,13 +52,12 @@ function Canvas() {
       value={{
         stageRef,
         shadowRef,
+        selected,
+        setSelected,
       }}
     >
-      <Layers setSelected={setSelected} />
-      <Controls
-        amountOfBlocks={blocks.length}
-        selected={selected}
-      />
+      <Layers />
+      <Controls />
 
       <Stage
         width={STAGE_WIDTH}
@@ -94,10 +90,7 @@ function Canvas() {
           ref={blockLayerRef}
           onDragEnd={onCollision}
         >
-          <Blocks
-            selected={selected}
-            setSelected={setSelected}
-          />
+          <Blocks />
         </Layer>
       </Stage>
     </KonvaContext.Provider>

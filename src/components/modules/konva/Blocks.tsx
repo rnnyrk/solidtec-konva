@@ -9,10 +9,8 @@ import { useKonvaContext } from './KonvaContext';
 
 const theme = getTheme();
 
-export function Blocks({ selected, setSelected }: BlocksProps) {
-  const konvaContext = useKonvaContext();
-  const stageRef = konvaContext?.stageRef;
-  const shadowRef = konvaContext?.shadowRef;
+export function Blocks() {
+  const { stageRef, shadowRef, selected, setSelected } = useKonvaContext()!;
 
   const blocks = useBlocks();
   const { currentLayerIndex, layers, setLayers } = useBoardStore();
@@ -150,8 +148,3 @@ export function Blocks({ selected, setSelected }: BlocksProps) {
     </>
   );
 }
-
-type BlocksProps = {
-  selected: number | null;
-  setSelected: (index: number | null) => void;
-};

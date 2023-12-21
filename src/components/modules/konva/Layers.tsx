@@ -8,8 +8,8 @@ import { btnClass, Button } from 'common/interaction/Button';
 import { useKonvaContext } from './KonvaContext';
 import { NewLayer, type NewLayerValues } from './NewLayer';
 
-export function Layers({ setSelected }: LayersProps) {
-  const konvaContext = useKonvaContext();
+export function Layers() {
+  const { stageRef, setSelected } = useKonvaContext()!;
   const [isOpen, onOpenModal, onCloseModal] = useModal();
 
   const { currentLayerIndex, setCurrentLayer, layers, setLayers } = useBoardStore();
@@ -21,7 +21,7 @@ export function Layers({ setSelected }: LayersProps) {
   }
 
   function onNewLayer(data: NewLayerValues, reset: UseFormReset<NewLayerValues>) {
-    if (!konvaContext || !konvaContext.stageRef.current) return;
+    if (!stageRef.current) return;
 
     let newBlocks = [...blocks];
 
@@ -88,7 +88,3 @@ export function Layers({ setSelected }: LayersProps) {
     </div>
   );
 }
-
-type LayersProps = {
-  setSelected: (index: number | null) => void;
-};
