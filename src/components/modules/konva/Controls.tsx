@@ -2,7 +2,7 @@ import { UseFormReset } from 'react-hook-form';
 
 import { useModal } from 'hooks';
 import { useBlocks, useBoardStore } from 'store/board';
-import { BLOCK_BASE, BLOCK_SIZE, MAX_BLOCKS, STAGE_WIDTH } from 'utils/constants';
+import { BLOCK_BASE, BLOCK_HEIGHT, BLOCK_WIDTH, MAX_BLOCKS, STAGE_WIDTH } from 'utils/constants';
 import { btnClass, Button } from 'common/interaction/Button';
 
 import { useKonvaContext } from './KonvaContext';
@@ -33,13 +33,15 @@ export function Controls({
     let newBlocks = [...blocks];
 
     if (data.duplicate) {
-      const copyBlocks = [...layers[currentLayerIndex].blocks];
+      let copyBlocks = [...layers[currentLayerIndex].blocks];
 
-      // @TODO flip the blocks x and y coordinates
       if (data.flip) {
-        // copyBlocks.forEach((block) => {
-        //   block.x = STAGE_WIDTH - block.x - BLOCK_SIZE;
-        // });
+        const flippedBlocks = blocks.map((block) => ({
+          ...block,
+          x: STAGE_WIDTH - block.x - (block.rotated ? BLOCK_HEIGHT : BLOCK_WIDTH),
+        }));
+
+        copyBlocks = [...flippedBlocks];
       }
 
       newBlocks = [...copyBlocks];
@@ -47,13 +49,17 @@ export function Controls({
       newBlocks = [BLOCK_BASE];
     }
 
-    setLayers([
+    const newLayers = [
       ...layers,
       {
         index: layers.length,
         blocks: newBlocks,
       },
-    ]);
+    ];
+
+    setLayers(newLayers);
+    setCurrentLayer(newLayers.length - 1);
+    setSelected(null);
 
     onCloseModal();
     reset();
