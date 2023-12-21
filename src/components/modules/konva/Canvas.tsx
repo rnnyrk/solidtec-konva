@@ -4,18 +4,12 @@ import { Group, Layer, Rect, Stage, Text } from 'react-konva';
 
 import { useBlocks, useBoardStore } from 'store/board';
 import { getTheme } from 'utils';
-import {
-  BLOCK_BASE,
-  BLOCK_HEIGHT,
-  BLOCK_SIZE,
-  BLOCK_WIDTH,
-  STAGE_HEIGHT,
-  STAGE_WIDTH,
-} from 'utils/constants';
+import { BLOCK_HEIGHT, BLOCK_SIZE, BLOCK_WIDTH, STAGE_HEIGHT, STAGE_WIDTH } from 'utils/constants';
 
 import { Controls } from './Controls';
 import { Grid } from './Grid';
 import { KonvaContext } from './KonvaContext';
+import { Layers } from './Layers';
 import { Pallet } from './Pallet';
 
 const theme = getTheme();
@@ -29,13 +23,6 @@ function Canvas() {
   const blockLayerRef = useRef<any | null>(null);
   const stageRef = useRef<any | null>(null);
   const shadowRef = useRef<any | null>(null);
-
-  function onAdd() {
-    const newLayers = [...layers];
-    newLayers[currentLayerIndex].blocks = [...blocks, BLOCK_BASE];
-
-    setLayers(newLayers);
-  }
 
   function onActivate(index: number) {
     if (selected === index) {
@@ -222,9 +209,10 @@ function Canvas() {
         stageRef,
       }}
     >
+      <Layers setSelected={setSelected} />
       <Controls
         amountOfBlocks={blocks.length}
-        {...{ onAdd, onAlignLeft, onRotate, selected, setSelected }}
+        {...{ onAlignLeft, onRotate, selected }}
       />
 
       <Stage
