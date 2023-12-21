@@ -37,36 +37,52 @@ function Canvas() {
     setSelected(index);
   }
 
+  function onCopyLayer() {
+    if (!stageRef.current) return;
+
+    const copiedBlocks = blocks.map((block, index) => {
+      const groupId = `#group-${index}`;
+      const el = stageRef.current.find(groupId)[0];
+      return {
+        ...block,
+        x: el.x(),
+        y: el.y(),
+        width: el.width(),
+        height: el.height(),
+      };
+    });
+
+    setBlocks([...copiedBlocks]);
+  }
+
   function onRotate() {
     if (!stageRef.current || selected === null) return;
 
+    const groupEl = stageRef.current.find(`#group-${selected}`)[0];
     const textEl = stageRef.current.find(`#text-${selected}`)[0];
     const blockEl = stageRef.current.find(`#block-${selected}`)[0];
 
     if (rotaters.includes(selected)) {
       // Reset element to original dimensions
-      blockEl.setAttrs({
-        width: BLOCK_WIDTH,
-        height: BLOCK_HEIGHT,
-      });
+      const newSizes = { width: BLOCK_WIDTH, height: BLOCK_HEIGHT };
 
+      groupEl.setAttrs({ ...newSizes });
+      blockEl.setAttrs({ ...newSizes });
       textEl.setAttrs({
-        width: BLOCK_WIDTH,
-        height: BLOCK_HEIGHT,
+        ...newSizes,
         y: textEl.y() - 36,
       });
 
       setRotaters(rotaters.filter((rotater) => rotater !== selected));
     } else {
       // Flip width and height
-      blockEl.setAttrs({
-        width: BLOCK_HEIGHT,
-        height: BLOCK_WIDTH,
-      });
+      const newSizes = { width: BLOCK_HEIGHT, height: BLOCK_WIDTH };
 
+      groupEl.setAttrs({ ...newSizes });
+      blockEl.setAttrs({ ...newSizes });
       textEl.setAttrs({
-        width: BLOCK_HEIGHT,
-        height: BLOCK_WIDTH,
+        ...newSizes,
+        height: BLOCK_HEIGHT - 36,
         y: textEl.y() + 36,
       });
 
@@ -80,10 +96,10 @@ function Canvas() {
     if (!stageRef.current || selected === null) return;
 
     const groupId = `#group-${selected}`;
-    const element = stageRef.current.find(groupId)[0];
+    const el = stageRef.current.find(groupId)[0];
 
-    element.rotation(0);
-    element.position({
+    el.rotation(0);
+    el.position({
       x: 0,
       y: STAGE_HEIGHT / 2 - BLOCK_HEIGHT / 2,
     });
@@ -104,9 +120,12 @@ function Canvas() {
 
     const el = event.target;
 
+    const xPos = Math.round(el.x() / BLOCK_SIZE) * BLOCK_SIZE;
+    const yPos = Math.round(el.y() / BLOCK_SIZE) * BLOCK_SIZE;
+
     el.position({
-      x: Math.round(el.x() / BLOCK_SIZE) * BLOCK_SIZE,
-      y: Math.round(el.y() / BLOCK_SIZE) * BLOCK_SIZE,
+      x: xPos,
+      y: yPos,
     });
 
     stageRef.current.batchDraw();
@@ -120,8 +139,8 @@ function Canvas() {
     const el = event.target;
     const pos = el.getAbsolutePosition();
 
-    const index = Number(el.attrs.id.split('-')[1]);
-    const isRotatedEl = rotaters.includes(index);
+    const elId = Number(el.attrs.id.split('-')[1]);
+    const isRotatedEl = rotaters.includes(elId);
 
     // Depending on the rotation, the bounding box is different
     let xPos = pos.x;
@@ -160,7 +179,7 @@ function Canvas() {
     const target = event.target;
     const targetRect = event.target.getClientRect();
 
-    function haveIntersection(r1: any, r2: any) {
+    function areElementsIntersecting(r1: any, r2: any) {
       return !(
         r2.x > r1.x + r1.width ||
         r2.x + r2.width < r1.x ||
@@ -173,7 +192,8 @@ function Canvas() {
       // Do not check intersection with itself
       if (group === target) return;
 
-      if (haveIntersection(group.getClientRect(), targetRect)) {
+      const groupRect = group.getClientRect({ stroke: true });
+      if (areElementsIntersecting(groupRect, targetRect)) {
         group.children[0].fill('red');
       } else {
         group.children[0].fill('white');
@@ -186,7 +206,7 @@ function Canvas() {
       <Controls
         amountOfBlocks={blocks.length}
         isSelected={selected}
-        {...{ onAdd, onAlignLeft, onRotate }}
+        {...{ onAdd, onAlignLeft, onCopyLayer, onRotate }}
       />
 
       <Stage
@@ -234,7 +254,10 @@ function Canvas() {
                 onTap={() => onActivate(index)}
               >
                 <Rect
-                  {...block}
+                  width={block.width}
+                  height={block.height}
+                  x={0}
+                  y={0}
                   key={`block-${index}`}
                   id={`block-${index}`}
                   fill={selected === index ? '#89d5f5' : '#ffffff'}
@@ -242,8 +265,10 @@ function Canvas() {
                   strokeWidth={1}
                 />
                 <Text
-                  {...block}
-                  y={block.y + 36}
+                  width={block.width}
+                  height={block.height - 36}
+                  x={0}
+                  y={0 + 36}
                   key={`text-${index}`}
                   id={`text-${index}`}
                   text={`${index + 1}`}
