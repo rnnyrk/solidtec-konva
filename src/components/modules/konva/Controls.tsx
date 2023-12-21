@@ -5,14 +5,14 @@ export function Controls({
   amountOfBlocks,
   onAdd,
   onAlignLeft,
-  onCopyLayer,
+  onDuplicateLayer,
   onRotate,
   isSelected,
 }: ControlProps) {
   return (
     <>
       <div className="absolute top-4 left-4 z-20 flex flex-col">
-        <Button onClick={onCopyLayer}>Copy layer</Button>
+        <Button onClick={onDuplicateLayer}>Duplicate layer</Button>
       </div>
 
       <div className="absolute top-4 right-4 z-20 flex flex-col">
@@ -43,7 +43,7 @@ type ControlProps = {
   amountOfBlocks: number;
   onAdd: () => void;
   onAlignLeft: () => void;
-  onCopyLayer: () => void;
+  onDuplicateLayer: () => void;
   onRotate: () => void;
   isSelected: number | null;
 };

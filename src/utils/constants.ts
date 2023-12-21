@@ -14,10 +14,3 @@ export const BLOCK_BASE = {
   width: BLOCK_WIDTH,
   height: BLOCK_HEIGHT,
 };
-
-export type BaseBlock = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};

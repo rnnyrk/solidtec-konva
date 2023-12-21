@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { Group, Layer, Rect, Stage, Text } from 'react-konva';
 
+import { useBoardStore } from 'store/board';
 import {
   BLOCK_BASE,
   BLOCK_HEIGHT,
@@ -16,7 +17,10 @@ import { Grid } from './Grid';
 import { Pallet } from './Pallet';
 
 function Canvas() {
-  const [blocks, setBlocks] = useState<BaseBlock[]>([BLOCK_BASE]);
+  const { currentLayerIndex, layers, setLayers } = useBoardStore();
+  const currentLayer = layers[currentLayerIndex];
+  const blocks = currentLayer.blocks;
+
   const [rotaters, setRotaters] = useState<number[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
 
@@ -25,7 +29,10 @@ function Canvas() {
   const shadowRef = useRef<any | null>(null);
 
   function onAdd() {
-    setBlocks([BLOCK_BASE, ...blocks]);
+    const newLayers = [...layers];
+    newLayers[currentLayerIndex].blocks = [...blocks, BLOCK_BASE];
+
+    setLayers(newLayers);
   }
 
   function onActivate(index: number) {
@@ -37,7 +44,7 @@ function Canvas() {
     setSelected(index);
   }
 
-  function onCopyLayer() {
+  function onDuplicateLayer() {
     if (!stageRef.current) return;
 
     const copiedBlocks = blocks.map((block, index) => {
@@ -52,7 +59,8 @@ function Canvas() {
       };
     });
 
-    setBlocks([...copiedBlocks]);
+    // @TODO duplicate blocks to new layer
+    // setBlocks([...copiedBlocks]);
   }
 
   function onRotate() {
@@ -97,11 +105,17 @@ function Canvas() {
 
     const groupId = `#group-${selected}`;
     const el = stageRef.current.find(groupId)[0];
+    const isRotatedEl = rotaters.includes(selected);
+
+    let yPos = STAGE_HEIGHT / 2 - BLOCK_HEIGHT / 2;
+    if (isRotatedEl) {
+      yPos = STAGE_HEIGHT / 2 - BLOCK_WIDTH / 2;
+    }
 
     el.rotation(0);
     el.position({
       x: 0,
-      y: STAGE_HEIGHT / 2 - BLOCK_HEIGHT / 2,
+      y: yPos,
     });
 
     stageRef.current.batchDraw();
@@ -206,7 +220,7 @@ function Canvas() {
       <Controls
         amountOfBlocks={blocks.length}
         isSelected={selected}
-        {...{ onAdd, onAlignLeft, onCopyLayer, onRotate }}
+        {...{ onAdd, onAlignLeft, onDuplicateLayer, onRotate }}
       />
 
       <Stage
@@ -283,12 +297,5 @@ function Canvas() {
     </>
   );
 }
-
-type BaseBlock = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};
 
 export default Canvas;
