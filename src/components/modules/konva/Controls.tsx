@@ -43,7 +43,7 @@ export function Controls({
               key={`layer-button-${index}`}
               className="mr-2"
               onClick={() => onSetActiveLayer(index)}
-              variant={index === currentLayerIndex ? 'primary' : 'secondary'}
+              variant={index === currentLayerIndex ? 'primary' : 'alternative'}
             >
               Layer {index + 1}
             </Button>

@@ -12,6 +12,10 @@ declare global {
 
   // We have to declare how files other than .ts(x) or .js(x) are handled by our codebase because
   // Typescript does not know we are handling these files with Webpack.
+  declare module '*tailwind.config.js' {
+    const value: any;
+    export = value;
+  }
   declare module '*.otf' {
     const value: string;
     export = value;

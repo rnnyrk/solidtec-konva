@@ -16,6 +16,7 @@
     "export": "npx http-server --cors 'dist/index.html' -o -p 9000"
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.0.5",
     "clsx": "2.0.0",
     "konva": "9.2.3",
     "next": "14.0.4",

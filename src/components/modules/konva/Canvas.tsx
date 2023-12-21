@@ -3,6 +3,7 @@ import { KonvaEventObject } from 'konva/lib/Node';
 import { Group, Layer, Rect, Stage, Text } from 'react-konva';
 
 import { useBlocks, useBoardStore } from 'store/board';
+import { getTheme } from 'utils';
 import {
   BLOCK_BASE,
   BLOCK_HEIGHT,
@@ -16,6 +17,8 @@ import { Controls } from './Controls';
 import { Grid } from './Grid';
 import { KonvaContext } from './KonvaContext';
 import { Pallet } from './Pallet';
+
+const theme = getTheme();
 
 function Canvas() {
   const { currentLayerIndex, layers, setLayers } = useBoardStore();
@@ -246,7 +249,7 @@ function Canvas() {
             y={0}
             width={BLOCK_WIDTH}
             height={BLOCK_HEIGHT}
-            fill="#89d5f5"
+            fill={theme.colors.primaryAccent}
             opacity={0.6}
             visible={false}
           />
@@ -276,7 +279,7 @@ function Canvas() {
                   y={0}
                   key={`block[${currentLayerIndex}]-${index}`}
                   id={`block[${currentLayerIndex}]-${index}`}
-                  fill={selected === index ? '#89d5f5' : '#ffffff'}
+                  fill={selected === index ? theme.colors.primaryAccent : theme.colors.white}
                   stroke="#ddd"
                   strokeWidth={1}
                 />
