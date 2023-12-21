@@ -33,69 +33,6 @@ function Canvas() {
     setSelected(index);
   }
 
-  function onRotate() {
-    if (!stageRef.current || selected === null) return;
-
-    const groupEl = stageRef.current.find(`#group[${currentLayerIndex}]-${selected}`)[0];
-    const textEl = stageRef.current.find(`#text[${currentLayerIndex}]-${selected}`)[0];
-    const blockEl = stageRef.current.find(`#block[${currentLayerIndex}]-${selected}`)[0];
-
-    const newBlocks = [...blocks];
-    const currentBlock = newBlocks[selected];
-
-    // Reset element to initial value or update to rotated value
-    let newSizes = { width: BLOCK_WIDTH, height: BLOCK_HEIGHT };
-    let rotated = currentBlock.rotated;
-
-    if (rotated) {
-      rotated = false;
-    } else {
-      // Flip width and height and set rotated
-      rotated = true;
-      newSizes = { width: BLOCK_HEIGHT, height: BLOCK_WIDTH };
-    }
-
-    groupEl.setAttrs({ ...newSizes });
-    blockEl.setAttrs({ ...newSizes });
-    textEl.setAttrs({
-      ...newSizes,
-      height: BLOCK_HEIGHT - 36,
-    });
-
-    // Update width and height of the block in store after rotating
-    newBlocks[selected] = {
-      ...currentBlock,
-      ...newSizes,
-      rotated,
-    };
-
-    const newLayers = [...layers];
-    newLayers[currentLayerIndex].blocks = newBlocks;
-    setLayers(newLayers);
-
-    stageRef.current.batchDraw();
-  }
-
-  function onAlignLeft() {
-    if (!stageRef.current || selected === null) return;
-
-    const groupId = `#group[${currentLayerIndex}]-${selected}`;
-    const el = stageRef.current.find(groupId)[0];
-    const isRotatedEl = blocks[selected].rotated;
-
-    let yPos = STAGE_HEIGHT / 2 - BLOCK_HEIGHT / 2;
-    if (isRotatedEl) {
-      yPos = STAGE_HEIGHT / 2 - BLOCK_WIDTH / 2;
-    }
-
-    el.position({
-      x: 0,
-      y: yPos,
-    });
-
-    stageRef.current.batchDraw();
-  }
-
   function onDragStart(event: KonvaEventObject<DragEvent>) {
     if (!shadowRef.current || !stageRef.current) return;
 
@@ -207,12 +144,13 @@ function Canvas() {
     <KonvaContext.Provider
       value={{
         stageRef,
+        shadowRef,
       }}
     >
       <Layers setSelected={setSelected} />
       <Controls
         amountOfBlocks={blocks.length}
-        {...{ onAlignLeft, onRotate, selected }}
+        selected={selected}
       />
 
       <Stage

@@ -4,6 +4,7 @@ export const KonvaContext = createContext<KonvaContextType | null>(null);
 
 type KonvaContextType = {
   stageRef: any | null;
+  shadowRef: any | null;
 };
 
 export const useKonvaContext = () => {
