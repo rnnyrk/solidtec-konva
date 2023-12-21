@@ -1,14 +1,12 @@
 import { cn } from 'utils';
 
-export const Button = ({
-  children,
+export const btnClass = ({
   className,
-  onClick,
-  variant = 'primary',
-  ...props
-}: ButtonProps) => {
-  const btnClass = cn(
-    'mb-2 py-2 px-4 rounded',
+  size,
+  variant,
+}: Pick<ButtonProps, 'className' | 'size' | 'variant'>) =>
+  cn(
+    'py-2 px-4 rounded',
     'text-white font-bold transition-colors	duration-300',
     'disabled:bg-slate-200 disabled:cursor-not-allowed',
     className,
@@ -19,13 +17,22 @@ export const Button = ({
         variant === 'secondary',
       'bg-transparent border-2 border-primary text-primary hover:bg-primaryDark hover:border-primaryDark hover:text-white':
         variant === 'alternative',
+      'py-2 px-6 text-lg': size === 'xl',
     },
   );
 
+export const Button = ({
+  children,
+  className,
+  onClick,
+  size,
+  variant = 'primary',
+  ...props
+}: ButtonProps) => {
   return (
     <button
       onClick={onClick}
-      className={btnClass}
+      className={btnClass({ className, size, variant })}
       {...props}
     >
       {children}
@@ -36,5 +43,6 @@ export const Button = ({
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   className?: string;
   children: React.ReactNode;
+  size?: 'xl';
   variant?: 'primary' | 'secondary' | 'alternative';
 };

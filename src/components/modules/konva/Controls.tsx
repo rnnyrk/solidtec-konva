@@ -1,8 +1,10 @@
+import { useModal } from 'hooks';
 import { useBlocks, useBoardStore } from 'store/board';
 import { MAX_BLOCKS } from 'utils/constants';
-import { Button } from 'common/interaction/Button';
+import { btnClass, Button } from 'common/interaction/Button';
 
 import { useKonvaContext } from './KonvaContext';
+import { NewLayer, type NewLayerValues } from './NewLayer';
 
 export function Controls({
   amountOfBlocks,
@@ -12,6 +14,7 @@ export function Controls({
   isSelected,
 }: ControlProps) {
   const konvaContext = useKonvaContext();
+  const [isOpen, onOpenModal, onCloseModal] = useModal();
 
   const { currentLayerIndex, setCurrentLayer, layers, setLayers } = useBoardStore();
   const blocks = useBlocks();
@@ -20,8 +23,11 @@ export function Controls({
     setCurrentLayer(index);
   }
 
-  function onDuplicateLayer() {
+  function onNewLayer(data: NewLayerValues) {
     if (!konvaContext || !konvaContext.stageRef.current) return;
+
+    // @TODO check values from modal
+    console.log({ data });
 
     const duplicateBlocks = [...blocks];
     setLayers([
@@ -31,47 +37,57 @@ export function Controls({
         blocks: duplicateBlocks,
       },
     ]);
+
+    onCloseModal();
   }
 
   return (
     <>
       <div className="absolute top-4 left-4 z-20 flex">
-        {layers.map((layer) => {
-          const index = layer.index;
+        {layers.map((_, index) => {
           return (
             <Button
               key={`layer-button-${index}`}
               className="mr-2"
               onClick={() => onSetActiveLayer(index)}
               variant={index === currentLayerIndex ? 'primary' : 'alternative'}
+              size="xl"
             >
               Layer {index + 1}
             </Button>
           );
         })}
-        <Button
-          variant="secondary"
-          onClick={onDuplicateLayer}
+        <NewLayer
+          title="Nieuwe laag toevoegen"
+          onCallback={onNewLayer}
+          onClose={onCloseModal}
+          onOpen={onOpenModal}
+          isOpen={isOpen}
         >
-          Duplicate
-        </Button>
+          <div className={btnClass({ variant: 'secondary', size: 'xl' })}>Nieuwe laag</div>
+        </NewLayer>
       </div>
 
       <div className="absolute top-4 right-4 z-20 flex flex-col">
         <Button
           onClick={onAdd}
           disabled={amountOfBlocks === MAX_BLOCKS}
+          size="xl"
+          className="mb-2"
         >
           Add new
         </Button>
         <Button
           onClick={onRotate}
           disabled={isSelected === null}
+          size="xl"
+          className="mb-2"
         >
           Rotate
         </Button>
         <Button
           onClick={onAlignLeft}
+          size="xl"
           disabled={isSelected === null}
         >
           Align left

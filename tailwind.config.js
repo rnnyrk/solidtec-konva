@@ -10,6 +10,7 @@ module.exports = {
         secondary: '#cf6a3c',
         secondaryDark: '#a3451a',
         solidtecBlack: '#252d33',
+        solidtecBlackAccent: '#202224',
       },
       fontFamily: {
         serif: ['var(--font-inter)'],
