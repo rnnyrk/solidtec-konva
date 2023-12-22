@@ -15,7 +15,6 @@ import { Pallet } from './Pallet';
 const theme = getTheme();
 
 // @TODO keyboard controls +1 -1
-// @TODO flip on y axis
 // @TODO BLOCK_SIZE margin on collision
 // @TODO use and change order on blocks
 

@@ -14,7 +14,8 @@ import {
 
 export type NewLayerValues = {
   duplicate: boolean;
-  flip: boolean;
+  flipX: boolean;
+  flipY: boolean;
 };
 
 export function NewLayer({
@@ -35,17 +36,19 @@ export function NewLayer({
     reset,
   } = useForm<NewLayerValues>();
 
-  const flipEnabled = watch('flip');
+  const flipXEnabled = watch('flipX');
+  const flipYEnabled = watch('flipY');
   const duplicateEnabled = watch('duplicate');
 
   useEffect(() => {
-    if (
-      (!duplicateEnabled && flipEnabled) ||
-      (duplicateEnabled && typeof flipEnabled === 'undefined')
-    ) {
-      setValue('flip', false);
+    const flipXUndefined = typeof flipXEnabled === 'undefined';
+    const flipYUndefined = typeof flipYEnabled === 'undefined';
+
+    if (!duplicateEnabled || flipXUndefined || flipYUndefined) {
+      setValue('flipX', false);
+      setValue('flipY', false);
     }
-  }, [duplicateEnabled, flipEnabled]);
+  }, [duplicateEnabled, flipXEnabled, flipYEnabled]);
 
   return (
     <Dialog open={isOpen}>
@@ -68,18 +71,26 @@ export function NewLayer({
           <Checkbox
             control={control}
             id="duplicate"
-            label="Dupliceer huidige laag"
+            label="Duplicate current layer"
             size="xl"
             checked={duplicateEnabled}
             wrapperClassName="mb-8"
           />
-
           <Checkbox
             control={control}
-            id="flip"
-            label="Flip gedupliceerde laag"
+            id="flipX"
+            label="Flip layer on X axis"
             size="xl"
-            checked={flipEnabled}
+            wrapperClassName="mb-8"
+            checked={flipXEnabled}
+            disabled={!duplicateEnabled}
+          />
+          <Checkbox
+            control={control}
+            id="flipY"
+            label="Flip layer on Y axis"
+            size="xl"
+            checked={flipYEnabled}
             disabled={!duplicateEnabled}
           />
 
@@ -89,7 +100,7 @@ export function NewLayer({
             size="xl"
             disabled={Object.keys(errors).length > 0}
           >
-            Aanmaken
+            Create new layer
           </Button>
         </form>
       </DialogContent>

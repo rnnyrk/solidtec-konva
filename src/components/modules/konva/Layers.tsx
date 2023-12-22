@@ -2,7 +2,7 @@ import { UseFormReset } from 'react-hook-form';
 
 import { useModal } from 'hooks';
 import { useBlocks, useBoardStore } from 'store/board';
-import { BLOCK_BASE, BLOCK_HEIGHT, BLOCK_WIDTH, STAGE_WIDTH } from 'utils/constants';
+import { BLOCK_BASE, BLOCK_HEIGHT, BLOCK_WIDTH, STAGE_HEIGHT, STAGE_WIDTH } from 'utils/constants';
 import { btnClass, Button } from 'common/interaction/Button';
 
 import { useKonvaContext } from './KonvaContext';
@@ -28,13 +28,18 @@ export function Layers() {
     if (data.duplicate) {
       let copyBlocks = [...layers[currentLayerIndex].blocks];
 
-      if (data.flip) {
-        const flippedBlocks = blocks.map((block) => ({
+      if (data.flipX) {
+        copyBlocks = copyBlocks.map((block) => ({
           ...block,
           x: STAGE_WIDTH - block.x - (block.rotated ? BLOCK_HEIGHT : BLOCK_WIDTH),
         }));
+      }
 
-        copyBlocks = [...flippedBlocks];
+      if (data.flipY) {
+        copyBlocks = copyBlocks.map((block) => ({
+          ...block,
+          y: STAGE_HEIGHT - block.y - (block.rotated ? BLOCK_WIDTH : BLOCK_HEIGHT),
+        }));
       }
 
       newBlocks = [...copyBlocks];
@@ -75,14 +80,14 @@ export function Layers() {
       })}
       {layers.length < 4 && (
         <NewLayer
-          title="Nieuwe laag toevoegen"
-          description="Dupliceer de huidige laag of maak een blanco nieuwe laag aan door niets te selecteren."
+          title="Add new layer"
+          description="Duplicate current layer or create new blanco layer by selecting none."
           onCallback={onNewLayer}
           onClose={onCloseModal}
           onOpen={onOpenModal}
           isOpen={isOpen}
         >
-          <div className={btnClass({ variant: 'secondary', size: 'xl' })}>Nieuwe laag</div>
+          <div className={btnClass({ variant: 'secondary', size: 'xl' })}>New layer</div>
         </NewLayer>
       )}
     </div>
