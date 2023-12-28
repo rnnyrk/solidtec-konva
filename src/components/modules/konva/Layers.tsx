@@ -6,7 +6,7 @@ import { BLOCK_BASE, BLOCK_HEIGHT, BLOCK_WIDTH, STAGE_HEIGHT, STAGE_WIDTH } from
 import { btnClass, Button } from 'common/interaction/Button';
 
 import { useKonvaContext } from './KonvaContext';
-import { NewLayer, type NewLayerValues } from './NewLayer';
+import { NewLayerModal, type NewLayerModalValues } from './NewLayerModal';
 
 export function Layers() {
   const { stageRef, setSelected } = useKonvaContext()!;
@@ -20,7 +20,7 @@ export function Layers() {
     setCurrentLayer(index);
   }
 
-  function onNewLayer(data: NewLayerValues, reset: UseFormReset<NewLayerValues>) {
+  function onNewLayer(data: NewLayerModalValues, reset: UseFormReset<NewLayerModalValues>) {
     if (!stageRef.current) return;
 
     let newBlocks = [...blocks];
@@ -64,12 +64,12 @@ export function Layers() {
   }
 
   return (
-    <div className="absolute top-4 left-4 z-20 flex">
+    <div className="absolute top-4 left-4 z-20 flex flex-col">
       {layers.map((_, index) => {
         return (
           <Button
             key={`layer-button-${index}`}
-            className="mr-2"
+            className="mb-2"
             onClick={() => onSetActiveLayer(index)}
             variant={index === currentLayerIndex ? 'primary' : 'alternative'}
             size="xl"
@@ -79,7 +79,7 @@ export function Layers() {
         );
       })}
       {layers.length < 4 && (
-        <NewLayer
+        <NewLayerModal
           title="Add new layer"
           description="Duplicate current layer or create new blanco layer by selecting none."
           onCallback={onNewLayer}
@@ -88,7 +88,7 @@ export function Layers() {
           isOpen={isOpen}
         >
           <div className={btnClass({ variant: 'secondary', size: 'xl' })}>New layer</div>
-        </NewLayer>
+        </NewLayerModal>
       )}
     </div>
   );

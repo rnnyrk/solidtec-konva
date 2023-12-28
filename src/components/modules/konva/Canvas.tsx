@@ -3,7 +3,7 @@ import { KonvaEventObject } from 'konva/lib/Node';
 import { Layer, Rect, Stage } from 'react-konva';
 
 import { getTheme } from 'utils';
-import { BLOCK_HEIGHT, BLOCK_WIDTH, STAGE_HEIGHT, STAGE_WIDTH } from 'utils/constants';
+import { BLOCK_HEIGHT, BLOCK_SIZE, BLOCK_WIDTH, STAGE_HEIGHT, STAGE_WIDTH } from 'utils/constants';
 
 import { Blocks } from './Blocks';
 import { Controls } from './Controls';
@@ -15,7 +15,6 @@ import { Pallet } from './Pallet';
 const theme = getTheme();
 
 // @TODO keyboard controls +1 -1
-// @TODO BLOCK_SIZE margin on collision
 // @TODO use and change order on blocks
 
 function Canvas() {
@@ -29,18 +28,79 @@ function Canvas() {
     const target = event.target;
     const targetRect = event.target.getClientRect();
 
-    function areElementsIntersecting(r1: any, r2: any) {
+    // @TODO BLOCK_SIZE margin on collision
+    // @TODO debug collision because it seems to be broken when duplicating blocks
+
+    // function isPointInsideRect(point, rect) {
+    //   return (
+    //     point.x >= rect.x &&
+    //     point.x <= rect.x + rect.width &&
+    //     point.y >= rect.y &&
+    //     point.y <= rect.y + rect.height
+    //   );
+    // }
+
+    function areElementsIntersecting(r1: ClientRect, r2: ClientRect) {
+      const shrunkR1 = {
+        x: r1.x + BLOCK_SIZE,
+        y: r1.y + BLOCK_SIZE,
+        width: r1.width - BLOCK_SIZE * 2,
+        height: r1.height - BLOCK_SIZE * 2,
+      };
+
+      // Check if the shrunk r1 intersects with r2
       return !(
-        r2.x > r1.x + r1.width ||
-        r2.x + r2.width < r1.x ||
-        r2.y > r1.y + r1.height ||
-        r2.y + r2.height < r1.y
+        shrunkR1.x > r2.x + r2.width ||
+        shrunkR1.x + shrunkR1.width < r2.x ||
+        shrunkR1.y > r2.y + r2.height ||
+        shrunkR1.y + shrunkR1.height < r2.y
       );
+
+      // Adjust the collision box to be smaller so we have an offset one time as the BLOCK_SIZE
+      // const inflatedR2 = {
+      //   x: r2.x + BLOCK_SIZE,
+      //   y: r2.y + BLOCK_SIZE,
+      //   width: r2.width - BLOCK_SIZE * 2,
+      //   height: r2.height - BLOCK_SIZE * 2,
+      // };
+
+      // return (
+      //   isPointInsideRect({ x: r1.x, y: r1.y }, inflatedR2) ||
+      //   isPointInsideRect({ x: r1.x + r1.width, y: r1.y }, inflatedR2) ||
+      //   isPointInsideRect({ x: r1.x, y: r1.y + r1.height }, inflatedR2) ||
+      //   isPointInsideRect({ x: r1.x + r1.width, y: r1.y + r1.height }, inflatedR2)
+      // );
+
+      // console.log({
+      //   r2YStart: r2.y - BLOCK_SIZE,
+      //   r2YEnd: r2.y - BLOCK_SIZE + r2.height,
+      //   r1YStart: r1.y,
+      //   r1YEnd: r1.y + (r1.height - BLOCK_SIZE * 2),
+
+      //   check1: r2.y - BLOCK_SIZE > r1.y + (r1.height - BLOCK_SIZE * 2),
+      //   check2: r2.y - BLOCK_SIZE + r2.height < r1.y,
+      // });
+
+      // if the block is rotated fix the collision on the y axis
+      // if (r2.height === BLOCK_WIDTH) {
+      //   return !(
+      //     r2.x - BLOCK_SIZE > r1.x + (r1.width - BLOCK_SIZE * 2) ||
+      //     r2.x - BLOCK_SIZE + r2.width < r1.x ||
+      //     r2.y - BLOCK_SIZE > r1.y + (r1.height - BLOCK_SIZE * 2) ||
+      //     r2.y - BLOCK_SIZE + r2.height < r1.y
+      //   );
+      // }
+
+      // return !(
+      //   r2.x - BLOCK_SIZE > r1.x + (r1.width - BLOCK_SIZE * 2) ||
+      //   r2.x - BLOCK_SIZE + r2.width < r1.x ||
+      //   r2.y - BLOCK_SIZE > r1.y + (r1.height - BLOCK_SIZE * 2) ||
+      //   r2.y - BLOCK_SIZE + r2.height < r1.y
+      // );
     }
 
     blockLayerRef.current.children.forEach((group: any) => {
-      // Do not check intersection with itself
-      if (group === target) return;
+      if (group === target) return; // Do not check intersection with itself
 
       const groupRect = group.getClientRect({ stroke: true });
       if (areElementsIntersecting(groupRect, targetRect)) {
@@ -99,5 +159,7 @@ function Canvas() {
     </KonvaContext.Provider>
   );
 }
+
+type ClientRect = { x: number; y: number; width: number; height: number };
 
 export default Canvas;

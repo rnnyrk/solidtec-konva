@@ -119,6 +119,7 @@ export function Blocks() {
             onDragMove={onDragMove}
             onClick={() => onActivate(index)}
             onTap={() => onActivate(index)}
+            fill="lime"
           >
             <Rect
               width={block.width}

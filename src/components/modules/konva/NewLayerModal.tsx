@@ -12,13 +12,13 @@ import {
   DialogTrigger,
 } from 'common/interaction/Dialog';
 
-export type NewLayerValues = {
+export type NewLayerModalValues = {
   duplicate: boolean;
   flipX: boolean;
   flipY: boolean;
 };
 
-export function NewLayer({
+export function NewLayerModal({
   children,
   description,
   onCallback,
@@ -26,7 +26,7 @@ export function NewLayer({
   onOpen,
   isOpen,
   title,
-}: NewLayerProps) {
+}: NewLayerModalProps) {
   const {
     control,
     handleSubmit,
@@ -34,7 +34,7 @@ export function NewLayer({
     setValue,
     watch,
     reset,
-  } = useForm<NewLayerValues>();
+  } = useForm<NewLayerModalValues>();
 
   const flipXEnabled = watch('flipX');
   const flipYEnabled = watch('flipY');
@@ -108,10 +108,10 @@ export function NewLayer({
   );
 }
 
-type NewLayerProps = {
+type NewLayerModalProps = {
   children: React.ReactNode;
   description?: string;
-  onCallback: (data: NewLayerValues, reset: UseFormReset<NewLayerValues>) => void;
+  onCallback: (data: NewLayerModalValues, reset: UseFormReset<NewLayerModalValues>) => void;
   onClose: () => void;
   onOpen: (modalId?: string) => void;
   isOpen: boolean;
