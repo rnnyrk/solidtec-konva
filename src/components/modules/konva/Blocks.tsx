@@ -138,7 +138,7 @@ export function Blocks() {
               y={(block.rotated ? 36 : 0) + 36}
               key={`text[${currentLayerIndex}]-${index}`}
               id={`text[${currentLayerIndex}]-${index}`}
-              text={`${index + 1}`}
+              text={`${block.order}`}
               fontSize={60}
               align="center"
             />

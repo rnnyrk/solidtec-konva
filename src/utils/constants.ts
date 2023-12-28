@@ -9,6 +9,7 @@ export const BLOCK_WIDTH = BLOCK_SIZE * 10;
 export const BLOCK_HEIGHT = BLOCK_SIZE * 6;
 
 export const BLOCK_BASE = {
+  order: 1,
   x: 0,
   y: 0,
   width: BLOCK_WIDTH,

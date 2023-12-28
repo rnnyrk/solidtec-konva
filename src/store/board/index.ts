@@ -24,9 +24,6 @@ export const useBoardStore = create<BoardStore>()((set) => ({
 
   layers: [
     {
-      // @TODO index is redundant because you can just use the array index
-      // create order instead to represent the laying order (text in the UI), should default to the index
-      index: 0,
       blocks: [BLOCK_BASE],
     },
   ],

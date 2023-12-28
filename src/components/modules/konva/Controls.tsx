@@ -11,12 +11,17 @@ export function Controls() {
   const blocks = useBlocks();
 
   function onAddBlock() {
+    const newBlock = {
+      ...BLOCK_BASE,
+      order: blocks.length + 1,
+    };
+
     const newLayers = [...layers];
-    const newBlocks = [...blocks, BLOCK_BASE];
-    newLayers[currentLayerIndex].blocks = newBlocks;
+    const newLayerBlocks = [...blocks, newBlock];
+    newLayers[currentLayerIndex].blocks = newLayerBlocks;
 
     setLayers(newLayers);
-    setSelected(newBlocks.length - 1);
+    setSelected(newLayerBlocks.length - 1);
   }
 
   function onAlignLeft() {
