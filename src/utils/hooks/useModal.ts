@@ -1,6 +1,17 @@
 import { useState } from 'react';
 
-type UseModalReturn = [boolean, (modalId?: string) => void, () => void, string | undefined];
+export type ModalProps = {
+  onClose: () => void;
+  onOpen: (modalId?: string) => void;
+  isOpen: boolean;
+};
+
+type UseModalReturn = [
+  ModalProps['isOpen'],
+  ModalProps['onOpen'],
+  ModalProps['onClose'],
+  string | undefined,
+];
 
 export const useModal = (): UseModalReturn => {
   const [open, setOpen] = useState<string | undefined>(undefined);

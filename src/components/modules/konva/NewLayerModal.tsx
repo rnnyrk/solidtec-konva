@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useForm, UseFormReset } from 'react-hook-form';
 
+import { type ModalProps } from 'hooks';
 import { Checkbox } from 'common/form/Checkbox';
 import { Button } from 'common/interaction/Button';
 import {
@@ -108,12 +109,9 @@ export function NewLayerModal({
   );
 }
 
-type NewLayerModalProps = {
+type NewLayerModalProps = ModalProps & {
   children: React.ReactNode;
   description?: string;
   onCallback: (data: NewLayerModalValues, reset: UseFormReset<NewLayerModalValues>) => void;
-  onClose: () => void;
-  onOpen: (modalId?: string) => void;
-  isOpen: boolean;
   title: string;
 };

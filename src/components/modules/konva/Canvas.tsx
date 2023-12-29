@@ -11,6 +11,7 @@ import { Controls } from './Controls';
 import { KonvaContext } from './KonvaContext';
 import { Layers } from './Layers';
 import { Pallet } from './Pallet';
+import { Settings } from './Settings';
 
 const theme = getTheme();
 
@@ -121,6 +122,7 @@ function Canvas() {
       }}
     >
       <Layers />
+      <Settings />
       <Controls />
 
       <Stage
