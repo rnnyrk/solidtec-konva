@@ -1,1 +1,1 @@
-# Ronny Rook
+# Solidtec Konva
