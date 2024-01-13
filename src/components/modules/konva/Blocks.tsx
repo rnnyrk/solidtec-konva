@@ -1,6 +1,7 @@
 import { KonvaEventObject } from 'konva/lib/Node';
 import { Group, Rect, Text } from 'react-konva';
 
+import { useKeys } from 'hooks';
 import { useBlocks, useBoardStore } from 'store/board';
 import { getTheme } from 'utils';
 import { BLOCK_HEIGHT, BLOCK_SIZE, BLOCK_WIDTH, STAGE_HEIGHT, STAGE_WIDTH } from 'utils/constants';
@@ -12,6 +13,7 @@ const theme = getTheme();
 export function Blocks() {
   const { stageRef, shadowRef, selected, setSelected } = useKonvaContext()!;
 
+  useKeys();
   const blocks = useBlocks();
   const { currentLayerIndex, layers, setLayers } = useBoardStore();
 

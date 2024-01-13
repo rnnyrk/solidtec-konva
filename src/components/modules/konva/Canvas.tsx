@@ -15,7 +15,6 @@ import { Settings } from './Settings';
 
 const theme = getTheme();
 
-// @TODO keyboard controls +1 -1
 // @TODO use and change order on blocks
 
 function Canvas() {

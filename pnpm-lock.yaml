@@ -29,6 +29,9 @@ dependencies:
   react-hook-form:
     specifier: 7.49.2
     version: 7.49.2(react@18.2.0)
+  react-hotkeys-hook:
+    specifier: ^4.4.4
+    version: 4.4.4(react-dom@18.2.0)(react@18.2.0)
   react-konva:
     specifier: 18.2.10
     version: 18.2.10(konva@9.2.3)(react-dom@18.2.0)(react@18.2.0)
@@ -127,6 +130,9 @@ devDependencies:
   tailwindcss:
     specifier: 3.3.6
     version: 3.3.6
+  ts-key-enum:
+    specifier: ^2.0.12
+    version: 2.0.12
   typescript:
     specifier: 5.3.3
     version: 5.3.3
@@ -6093,6 +6099,16 @@ packages:
       react: 18.2.0
     dev: false
 
+  /react-hotkeys-hook@4.4.4(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-wzZmqb/Obr0ds9Myc1sIFPJ52GA/Eeg/vXBWV0HA1LvHlVAW5Va3KB0q6EZNlNSHQWscWZ2K8+6w0GYSie2o7A==}
+    peerDependencies:
+      react: '>=16.8.1'
+      react-dom: '>=16.8.1'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: true
@@ -6794,6 +6810,10 @@ packages:
 
   /ts-interface-checker@0.1.13:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
+    dev: true
+
+  /ts-key-enum@2.0.12:
+    resolution: {integrity: sha512-Ety4IvKMaeG34AyXMp5r11XiVZNDRL+XWxXbVVJjLvq2vxKRttEANBE7Za1bxCAZRdH2/sZT6jFyyTWxXz28hw==}
     dev: true
 
   /tsconfig-paths@3.14.2:
