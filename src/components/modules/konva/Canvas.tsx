@@ -1,9 +1,8 @@
 import { useRef, useState } from 'react';
-import { KonvaEventObject } from 'konva/lib/Node';
 import { Layer, Rect, Stage } from 'react-konva';
 
 import { getTheme } from 'utils';
-import { BLOCK_HEIGHT, BLOCK_SIZE, BLOCK_WIDTH, STAGE_HEIGHT, STAGE_WIDTH } from 'utils/constants';
+import { BLOCK_HEIGHT, BLOCK_WIDTH, STAGE_HEIGHT, STAGE_WIDTH } from 'utils/constants';
 
 import { Blocks } from './Blocks';
 import { Controls } from './Controls';
