@@ -24,93 +24,6 @@ function Canvas() {
   const stageRef = useRef<any | null>(null);
   const shadowRef = useRef<any | null>(null);
 
-  function onCollision(event: KonvaEventObject<DragEvent>) {
-    const target = event.target;
-    const targetRect = event.target.getClientRect();
-
-    // @TODO BLOCK_SIZE margin on collision
-    // @TODO debug collision because it seems to be broken when duplicating blocks
-
-    // function isPointInsideRect(point, rect) {
-    //   return (
-    //     point.x >= rect.x &&
-    //     point.x <= rect.x + rect.width &&
-    //     point.y >= rect.y &&
-    //     point.y <= rect.y + rect.height
-    //   );
-    // }
-
-    function areElementsIntersecting(r1: ClientRect, r2: ClientRect) {
-      const shrunkR1 = {
-        x: r1.x + BLOCK_SIZE,
-        y: r1.y + BLOCK_SIZE,
-        width: r1.width - BLOCK_SIZE * 2,
-        height: r1.height - BLOCK_SIZE * 2,
-      };
-
-      // Check if the shrunk r1 intersects with r2
-      return !(
-        shrunkR1.x > r2.x + r2.width ||
-        shrunkR1.x + shrunkR1.width < r2.x ||
-        shrunkR1.y > r2.y + r2.height ||
-        shrunkR1.y + shrunkR1.height < r2.y
-      );
-
-      // Adjust the collision box to be smaller so we have an offset one time as the BLOCK_SIZE
-      // const inflatedR2 = {
-      //   x: r2.x + BLOCK_SIZE,
-      //   y: r2.y + BLOCK_SIZE,
-      //   width: r2.width - BLOCK_SIZE * 2,
-      //   height: r2.height - BLOCK_SIZE * 2,
-      // };
-
-      // return (
-      //   isPointInsideRect({ x: r1.x, y: r1.y }, inflatedR2) ||
-      //   isPointInsideRect({ x: r1.x + r1.width, y: r1.y }, inflatedR2) ||
-      //   isPointInsideRect({ x: r1.x, y: r1.y + r1.height }, inflatedR2) ||
-      //   isPointInsideRect({ x: r1.x + r1.width, y: r1.y + r1.height }, inflatedR2)
-      // );
-
-      // console.log({
-      //   r2YStart: r2.y - BLOCK_SIZE,
-      //   r2YEnd: r2.y - BLOCK_SIZE + r2.height,
-      //   r1YStart: r1.y,
-      //   r1YEnd: r1.y + (r1.height - BLOCK_SIZE * 2),
-
-      //   check1: r2.y - BLOCK_SIZE > r1.y + (r1.height - BLOCK_SIZE * 2),
-      //   check2: r2.y - BLOCK_SIZE + r2.height < r1.y,
-      // });
-
-      // if the block is rotated fix the collision on the y axis
-      // if (r2.height === BLOCK_WIDTH) {
-      //   return !(
-      //     r2.x - BLOCK_SIZE > r1.x + (r1.width - BLOCK_SIZE * 2) ||
-      //     r2.x - BLOCK_SIZE + r2.width < r1.x ||
-      //     r2.y - BLOCK_SIZE > r1.y + (r1.height - BLOCK_SIZE * 2) ||
-      //     r2.y - BLOCK_SIZE + r2.height < r1.y
-      //   );
-      // }
-
-      // return !(
-      //   r2.x - BLOCK_SIZE > r1.x + (r1.width - BLOCK_SIZE * 2) ||
-      //   r2.x - BLOCK_SIZE + r2.width < r1.x ||
-      //   r2.y - BLOCK_SIZE > r1.y + (r1.height - BLOCK_SIZE * 2) ||
-      //   r2.y - BLOCK_SIZE + r2.height < r1.y
-      // );
-    }
-
-    blockLayerRef.current.children.forEach((group: any) => {
-      if (group === target) return; // Do not check intersection with itself
-
-      const groupRect = group.getClientRect({ stroke: true });
-      if (areElementsIntersecting(groupRect, targetRect)) {
-        group.children[0].fill('red');
-      } else {
-        group.children[0].fill('white');
-      }
-    });
-  }
-
   return (
     <KonvaContext.Provider
       value={{
@@ -150,17 +63,12 @@ function Canvas() {
           />
         </Layer>
 
-        <Layer
-          ref={blockLayerRef}
-          onDragEnd={onCollision}
-        >
+        <Layer ref={blockLayerRef}>
           <Blocks />
         </Layer>
       </Stage>
     </KonvaContext.Provider>
   );
 }
-
-type ClientRect = { x: number; y: number; width: number; height: number };
 
 export default Canvas;
