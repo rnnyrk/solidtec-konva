@@ -1,6 +1,7 @@
 import type * as i from 'types';
 
 export type Layer = {
+  collarMargin: number;
   blocks: i.Block[];
 };
 

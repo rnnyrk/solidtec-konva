@@ -48,7 +48,7 @@ function Canvas() {
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            backgroundColor: theme.colors.solidtecBlackMargin,
+            border: `2px solid ${theme.colors.primaryDark}`,
           }}
         >
           {/* <Grid /> */}
