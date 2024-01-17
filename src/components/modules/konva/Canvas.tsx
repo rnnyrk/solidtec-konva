@@ -8,9 +8,8 @@ import { Blocks } from './Blocks';
 import { Controls } from './Controls';
 // import { Grid } from './Grid';
 import { KonvaContext } from './KonvaContext';
-import { Layers } from './Layers';
 import { Pallet } from './Pallet';
-import { Settings } from './Settings';
+import { Sidebar } from './Sidebar';
 
 const theme = getTheme();
 
@@ -32,40 +31,41 @@ function Canvas() {
         setSelected,
       }}
     >
-      <Layers />
-      <Settings />
+      <Sidebar />
       <Controls />
 
-      <Stage
-        width={STAGE_WIDTH}
-        height={STAGE_HEIGHT}
-        ref={stageRef}
-        style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-        }}
-      >
-        {/* <Grid /> */}
-        <Layer>
-          <Pallet />
-          <Rect
-            ref={shadowRef}
-            x={0}
-            y={0}
-            width={BLOCK_WIDTH}
-            height={BLOCK_HEIGHT}
-            fill={theme.colors.primaryAccent}
-            opacity={0.6}
-            visible={false}
-          />
-        </Layer>
+      <div className="relative">
+        <Stage
+          width={STAGE_WIDTH}
+          height={STAGE_HEIGHT}
+          ref={stageRef}
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+          }}
+        >
+          {/* <Grid /> */}
+          <Layer>
+            <Pallet />
+            <Rect
+              ref={shadowRef}
+              x={0}
+              y={0}
+              width={BLOCK_WIDTH}
+              height={BLOCK_HEIGHT}
+              fill={theme.colors.primaryAccent}
+              opacity={0.6}
+              visible={false}
+            />
+          </Layer>
 
-        <Layer ref={blockLayerRef}>
-          <Blocks />
-        </Layer>
-      </Stage>
+          <Layer ref={blockLayerRef}>
+            <Blocks />
+          </Layer>
+        </Stage>
+      </div>
     </KonvaContext.Provider>
   );
 }

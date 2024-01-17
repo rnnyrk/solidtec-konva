@@ -7,22 +7,20 @@ export function Settings() {
   const [isOpen, onOpenModal, onCloseModal] = useModal();
 
   return (
-    <div className="absolute left-2/4 -translate-x-2/4 top-4 z-20">
-      <BlockSettingsModal
-        onClose={onCloseModal}
-        onOpen={onOpenModal}
-        isOpen={isOpen}
+    <BlockSettingsModal
+      onClose={onCloseModal}
+      onOpen={onOpenModal}
+      isOpen={isOpen}
+    >
+      <div
+        className={btnClass({
+          className: 'flex justify-center w-full',
+          variant: 'secondary',
+          size: 'xl',
+        })}
       >
-        <div
-          className={btnClass({
-            className: 'flex items-center',
-            variant: 'secondary',
-            size: 'xl',
-          })}
-        >
-          Settings
-        </div>
-      </BlockSettingsModal>
-    </div>
+        Settings
+      </div>
+    </BlockSettingsModal>
   );
 }

@@ -7,7 +7,11 @@ const Canvas = dynamic(() => import('modules/konva/Canvas'), {
 });
 
 const Home = () => {
-  return <Canvas />;
+  return (
+    <main className="grid grid-cols-main">
+      <Canvas />
+    </main>
+  );
 };
 
 export default Home;

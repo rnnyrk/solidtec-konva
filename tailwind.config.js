@@ -12,6 +12,9 @@ module.exports = {
         solidtecBlack: '#252d33',
         solidtecBlackAccent: '#202224',
       },
+      gridTemplateColumns: {
+        main: '240px 1fr',
+      },
       fontFamily: {
         serif: ['var(--font-inter)'],
       },

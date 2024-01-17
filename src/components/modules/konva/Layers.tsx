@@ -64,7 +64,7 @@ export function Layers() {
   }
 
   return (
-    <div className="absolute top-4 left-4 z-20 flex flex-col">
+    <div className="flex flex-col justify-between">
       {layers.map((_, index) => {
         return (
           <Button

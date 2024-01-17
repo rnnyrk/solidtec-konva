@@ -88,12 +88,11 @@ export function Controls() {
   }
 
   return (
-    <div className="absolute top-4 right-4 z-20 flex flex-col">
+    <div className="w-full absolute top-0 right-0 left-0 z-20 flex gap-2 p-2 bg-white shadow-md">
       <Button
         onClick={onAddBlock}
         disabled={blocks.length === MAX_BLOCKS}
         size="xl"
-        className="mb-2"
       >
         Add new
       </Button>
@@ -101,7 +100,6 @@ export function Controls() {
         onClick={onRotate}
         disabled={selected === null}
         size="xl"
-        className="mb-2"
       >
         Rotate
       </Button>
