@@ -11,6 +11,7 @@ module.exports = {
         secondaryDark: '#a3451a',
         solidtecBlack: '#252d33',
         solidtecBlackAccent: '#202224',
+        solidtecBlackMargin: '#3f4952',
       },
       gridTemplateColumns: {
         main: '240px 1fr',
