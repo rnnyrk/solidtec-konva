@@ -1,5 +1,17 @@
-import { useBlocks, useBoardStore } from 'store/board';
-import { BLOCK_BASE, BLOCK_HEIGHT, BLOCK_WIDTH, MAX_BLOCKS, STAGE_HEIGHT } from 'utils/constants';
+import { useBlocks, useBoardStore, useCurrentLayer } from 'store/board';
+import {
+  BLOCK_BASE,
+  BLOCK_HEIGHT,
+  BLOCK_WIDTH,
+  MAX_BLOCKS,
+  STAGE_HEIGHT,
+  STAGE_WIDTH,
+} from 'utils/constants';
+import AddSvg from 'vectors/add.svg';
+import AlignHorizontalSvg from 'vectors/align-horizontal.svg';
+import AlignVerticalSvg from 'vectors/align-vertical.svg';
+import CarouselSvg from 'vectors/carousel.svg';
+import RotateSvg from 'vectors/rotate.svg';
 import { Button } from 'common/interaction/Button';
 
 import { useKonvaContext } from './KonvaContext';
@@ -9,6 +21,10 @@ export function Controls() {
 
   const { currentLayerIndex, layers, setLayers } = useBoardStore();
   const blocks = useBlocks();
+  const currentLayer = useCurrentLayer();
+
+  const stageWidthIncMargin = STAGE_WIDTH + currentLayer.collarMargin;
+  const stageHeightIncMargin = STAGE_HEIGHT + currentLayer.collarMargin;
 
   function onAddBlock() {
     const newBlock = {
@@ -24,21 +40,43 @@ export function Controls() {
     setSelected(newLayerBlocks.length - 1);
   }
 
-  function onAlignLeft() {
+  function onSplitEvenly() {}
+
+  function onAlignVertical() {
     if (!stageRef.current || selected === null) return;
 
     const groupId = `#group[${currentLayerIndex}]-${selected}`;
     const el = stageRef.current.find(groupId)[0];
     const isRotatedEl = blocks[selected].rotated;
 
-    let yPos = STAGE_HEIGHT / 2 - BLOCK_HEIGHT / 2;
+    let yPos = stageHeightIncMargin / 2 - BLOCK_HEIGHT / 2;
     if (isRotatedEl) {
-      yPos = STAGE_HEIGHT / 2 - BLOCK_WIDTH / 2;
+      yPos = stageHeightIncMargin / 2 - BLOCK_WIDTH / 2;
     }
 
     el.position({
-      x: 0,
+      x: el.x(),
       y: yPos,
+    });
+
+    stageRef.current.batchDraw();
+  }
+
+  function onAlignHorizontal() {
+    if (!stageRef.current || selected === null) return;
+
+    const groupId = `#group[${currentLayerIndex}]-${selected}`;
+    const el = stageRef.current.find(groupId)[0];
+    const isRotatedEl = blocks[selected].rotated;
+
+    let xPos = stageWidthIncMargin / 2 - BLOCK_WIDTH / 2;
+    if (isRotatedEl) {
+      xPos = stageWidthIncMargin / 2 - BLOCK_HEIGHT / 2;
+    }
+
+    el.position({
+      x: xPos,
+      y: el.y(),
     });
 
     stageRef.current.batchDraw();
@@ -92,23 +130,41 @@ export function Controls() {
       <Button
         onClick={onAddBlock}
         disabled={blocks.length === MAX_BLOCKS}
-        size="xl"
+        isIconOnly
       >
-        Add new
+        <AddSvg className="w-8 h-8" />
       </Button>
+
+      <Button
+        onClick={onSplitEvenly}
+        disabled={selected === null}
+        isIconOnly
+      >
+        <CarouselSvg className="w-8 h-8" />
+      </Button>
+
+      <Button
+        onClick={onAlignVertical}
+        disabled={selected === null}
+        isIconOnly
+      >
+        <AlignVerticalSvg className="w-8 h-8" />
+      </Button>
+
+      <Button
+        onClick={onAlignHorizontal}
+        disabled={selected === null}
+        isIconOnly
+      >
+        <AlignHorizontalSvg className="w-8 h-8" />
+      </Button>
+
       <Button
         onClick={onRotate}
         disabled={selected === null}
-        size="xl"
+        isIconOnly
       >
-        Rotate
-      </Button>
-      <Button
-        onClick={onAlignLeft}
-        size="xl"
-        disabled={selected === null}
-      >
-        Align left
+        <RotateSvg className="w-8 h-8" />
       </Button>
     </div>
   );
