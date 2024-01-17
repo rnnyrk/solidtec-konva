@@ -1,10 +1,10 @@
 import { KonvaEventObject } from 'konva/lib/Node';
 import { Group, Rect, Text } from 'react-konva';
 
-import { useKeys } from 'hooks';
+import { useBoundingBox, useKeys } from 'hooks';
 import { useBlocks, useBoardStore } from 'store/board';
 import { getTheme } from 'utils';
-import { BLOCK_HEIGHT, BLOCK_SIZE, BLOCK_WIDTH, STAGE_HEIGHT, STAGE_WIDTH } from 'utils/constants';
+import { BLOCK_HEIGHT, BLOCK_SIZE, BLOCK_WIDTH } from 'utils/constants';
 
 import { useKonvaContext } from './KonvaContext';
 
@@ -15,6 +15,7 @@ export function Blocks() {
 
   useKeys();
   const blocks = useBlocks();
+  const { getBoundingBox } = useBoundingBox();
   const { currentLayerIndex, layers, setLayers } = useBoardStore();
 
   function onActivate(index: number) {
@@ -74,34 +75,19 @@ export function Blocks() {
     const elId = Number(el.attrs.id.split('-')[1]);
     const isRotatedEl = blocks[elId].rotated;
 
-    // Depending on the rotation, the bounding box is different
-    let xPos = pos.x;
-    if (xPos < 0) xPos = 0;
-    if (!isRotatedEl && xPos > STAGE_WIDTH - BLOCK_WIDTH) {
-      xPos = STAGE_WIDTH - BLOCK_WIDTH;
-    } else if (isRotatedEl && xPos > STAGE_WIDTH - BLOCK_HEIGHT) {
-      xPos = STAGE_WIDTH - BLOCK_HEIGHT;
-    }
-
-    let yPos = pos.y;
-    if (yPos < 0) yPos = 0;
-    if (!isRotatedEl && yPos > STAGE_HEIGHT - BLOCK_HEIGHT) {
-      yPos = STAGE_HEIGHT - BLOCK_HEIGHT;
-    } else if (isRotatedEl && yPos > STAGE_HEIGHT - BLOCK_WIDTH) {
-      yPos = STAGE_HEIGHT - BLOCK_WIDTH;
-    }
+    const { x: newXPos, y: newYPos } = getBoundingBox({ pos, isRotatedEl });
 
     el.setAbsolutePosition({
-      x: xPos,
-      y: yPos,
+      x: newXPos,
+      y: newYPos,
     });
 
     // Match shadow element relative to the current element
     shadowRef.current.width(isRotatedEl ? BLOCK_HEIGHT : BLOCK_WIDTH);
     shadowRef.current.height(isRotatedEl ? BLOCK_WIDTH : BLOCK_HEIGHT);
     shadowRef.current.position({
-      x: Math.round(xPos / BLOCK_SIZE) * BLOCK_SIZE,
-      y: Math.round(yPos / BLOCK_SIZE) * BLOCK_SIZE,
+      x: Math.round(newXPos / BLOCK_SIZE) * BLOCK_SIZE,
+      y: Math.round(newYPos / BLOCK_SIZE) * BLOCK_SIZE,
     });
 
     stageRef.current.batchDraw();
@@ -121,7 +107,6 @@ export function Blocks() {
             onDragMove={onDragMove}
             onClick={() => onActivate(index)}
             onTap={() => onActivate(index)}
-            fill="lime"
           >
             <Rect
               width={block.width}
