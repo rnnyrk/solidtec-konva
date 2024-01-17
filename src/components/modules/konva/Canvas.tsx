@@ -14,6 +14,9 @@ import { Sidebar } from './Sidebar';
 const theme = getTheme();
 
 // @TODO use and change order on blocks
+// @TODO fix bounding box with margin
+// @TODO change margin per layer
+// @TODO fix rotation in 4 steps
 const MARGIN = BLOCK_SIZE * 6;
 
 function Canvas() {
