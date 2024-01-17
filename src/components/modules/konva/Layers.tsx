@@ -1,7 +1,7 @@
 import { UseFormReset } from 'react-hook-form';
 
 import { useModal } from 'hooks';
-import { useBlocks, useBoardStore } from 'store/board';
+import { useBlocks, useBoardStore, useCurrentLayer } from 'store/board';
 import { BLOCK_BASE, BLOCK_HEIGHT, BLOCK_WIDTH, STAGE_HEIGHT, STAGE_WIDTH } from 'utils/constants';
 import { btnClass, Button } from 'common/interaction/Button';
 
@@ -13,7 +13,11 @@ export function Layers() {
   const [isOpen, onOpenModal, onCloseModal] = useModal();
 
   const { currentLayerIndex, setCurrentLayer, layers, setLayers } = useBoardStore();
+  const currentLayer = useCurrentLayer();
   const blocks = useBlocks();
+
+  const stageWidthIncMargin = STAGE_WIDTH + currentLayer.collarMargin;
+  const stageHeightIncMargin = STAGE_HEIGHT + currentLayer.collarMargin;
 
   function onSetActiveLayer(index: number) {
     setSelected(null);
@@ -31,14 +35,14 @@ export function Layers() {
       if (data.flipX) {
         copyBlocks = copyBlocks.map((block) => ({
           ...block,
-          x: STAGE_WIDTH - block.x - (block.rotated ? BLOCK_HEIGHT : BLOCK_WIDTH),
+          x: stageWidthIncMargin - block.x - (block.rotated ? BLOCK_HEIGHT : BLOCK_WIDTH),
         }));
       }
 
       if (data.flipY) {
         copyBlocks = copyBlocks.map((block) => ({
           ...block,
-          y: STAGE_HEIGHT - block.y - (block.rotated ? BLOCK_WIDTH : BLOCK_HEIGHT),
+          y: stageHeightIncMargin - block.y - (block.rotated ? BLOCK_WIDTH : BLOCK_HEIGHT),
         }));
       }
 
@@ -50,7 +54,7 @@ export function Layers() {
     const newLayers = [
       ...layers,
       {
-        index: layers.length,
+        collarMargin: 0,
         blocks: newBlocks,
       },
     ];
