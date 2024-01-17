@@ -18,7 +18,7 @@ export function ReorderModal({ children, onCallback, onClose, onOpen, isOpen }: 
         onInteractOutside={onClose}
         className="min-w-[600px] bg-solidtecBlack p-0 overflow-hidden"
       >
-        <DialogHeader className="p-8 border-b-2 border-solidtecBlackAccent">
+        <DialogHeader>
           <DialogTitle>Change block placement order with another</DialogTitle>
         </DialogHeader>
 

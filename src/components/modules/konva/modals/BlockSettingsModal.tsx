@@ -34,7 +34,7 @@ export function BlockSettingsModal({ children, onClose, onOpen, isOpen }: BlockS
         onInteractOutside={onClose}
         className="min-w-[600px] bg-solidtecBlack p-0 overflow-hidden"
       >
-        <DialogHeader className="p-8 border-b-2 border-solidtecBlackAccent">
+        <DialogHeader>
           <DialogTitle>Change selected block</DialogTitle>
         </DialogHeader>
 
