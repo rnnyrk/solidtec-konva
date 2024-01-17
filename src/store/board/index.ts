@@ -1,7 +1,7 @@
 import * as i from 'types';
 import { create } from 'zustand';
 
-import { BLOCK_BASE } from 'utils/constants';
+import { BLOCK_BASE, BLOCK_SIZE } from 'utils/constants';
 
 type BoardStore = {
   currentLayerIndex: number;
@@ -24,7 +24,7 @@ export const useBoardStore = create<BoardStore>()((set) => ({
 
   layers: [
     {
-      collarMargin: 0,
+      collarMargin: BLOCK_SIZE * 6,
       blocks: [BLOCK_BASE],
     },
   ],
@@ -37,6 +37,11 @@ export const useBoardStore = create<BoardStore>()((set) => ({
     });
   },
 }));
+
+export function useCurrentLayer() {
+  const { currentLayerIndex, layers } = useBoardStore();
+  return layers[currentLayerIndex];
+}
 
 export function useBlocks() {
   const { currentLayerIndex, layers } = useBoardStore();

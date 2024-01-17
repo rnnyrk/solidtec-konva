@@ -1,8 +1,9 @@
 import { useRef, useState } from 'react';
 import { Layer, Rect, Stage } from 'react-konva';
 
+import { useCurrentLayer } from 'store/board';
 import { getTheme } from 'utils';
-import { BLOCK_HEIGHT, BLOCK_SIZE, BLOCK_WIDTH, STAGE_HEIGHT, STAGE_WIDTH } from 'utils/constants';
+import { BLOCK_HEIGHT, BLOCK_WIDTH, STAGE_HEIGHT, STAGE_WIDTH } from 'utils/constants';
 
 import { Blocks } from './Blocks';
 import { Controls } from './Controls';
@@ -14,12 +15,12 @@ import { Sidebar } from './Sidebar';
 const theme = getTheme();
 
 // @TODO use and change order on blocks
-// @TODO fix bounding box with margin
 // @TODO change margin per layer
 // @TODO fix rotation in 4 steps
-const MARGIN = BLOCK_SIZE * 6;
+// @TODO split evenly horizontal (multiple selected blocks)
 
 function Canvas() {
+  const currentLayer = useCurrentLayer();
   const [selected, setSelected] = useState<number | null>(null);
 
   const blockLayerRef = useRef<any | null>(null);
@@ -40,8 +41,8 @@ function Canvas() {
 
       <div className="relative">
         <Stage
-          width={STAGE_WIDTH + MARGIN}
-          height={STAGE_HEIGHT + MARGIN}
+          width={STAGE_WIDTH + currentLayer.collarMargin}
+          height={STAGE_HEIGHT + currentLayer.collarMargin}
           ref={stageRef}
           style={{
             position: 'absolute',
@@ -53,7 +54,7 @@ function Canvas() {
         >
           {/* <Grid /> */}
           <Layer>
-            <Pallet layerMargin={MARGIN} />
+            <Pallet />
             <Rect
               ref={shadowRef}
               x={0}
