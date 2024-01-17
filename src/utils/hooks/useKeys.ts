@@ -5,12 +5,13 @@ import { Key } from 'ts-key-enum';
 import { useBlocks, useBoardStore } from 'store/board';
 import { useKonvaContext } from 'modules/konva/KonvaContext';
 
+import { useBoundingBox } from './useBoundingBox';
+
 export function useKeys() {
   const { selected } = useKonvaContext()!;
   const blocks = useBlocks();
+  const { getBoundingBox } = useBoundingBox();
   const { currentLayerIndex, layers, setLayers } = useBoardStore();
-
-  // @TODO Add board constraints as in onDragMove
 
   function onUpdateLayers(newBlocks: i.Block[]) {
     const newLayers = [...layers];
@@ -22,9 +23,20 @@ export function useKeys() {
     if (selected === null) return;
 
     const newBlocks = [...blocks];
+    const pos = {
+      x: newBlocks[selected].x,
+      y: newBlocks[selected].y - 1,
+    };
+
+    const { x: newXPos, y: newYPos } = getBoundingBox({
+      pos,
+      isRotatedEl: newBlocks[selected].rotated,
+    });
+
     newBlocks[selected] = {
       ...newBlocks[selected],
-      y: newBlocks[selected].y - 1,
+      x: newXPos,
+      y: newYPos,
     };
 
     onUpdateLayers(newBlocks);
@@ -34,9 +46,20 @@ export function useKeys() {
     if (selected === null) return;
 
     const newBlocks = [...blocks];
+    const pos = {
+      x: newBlocks[selected].x + 1,
+      y: newBlocks[selected].y,
+    };
+
+    const { x: newXPos, y: newYPos } = getBoundingBox({
+      pos,
+      isRotatedEl: newBlocks[selected].rotated,
+    });
+
     newBlocks[selected] = {
       ...newBlocks[selected],
-      x: newBlocks[selected].x + 1,
+      x: newXPos,
+      y: newYPos,
     };
 
     onUpdateLayers(newBlocks);
@@ -46,9 +69,20 @@ export function useKeys() {
     if (selected === null) return;
 
     const newBlocks = [...blocks];
+    const pos = {
+      x: newBlocks[selected].x,
+      y: newBlocks[selected].y + 1,
+    };
+
+    const { x: newXPos, y: newYPos } = getBoundingBox({
+      pos,
+      isRotatedEl: newBlocks[selected].rotated,
+    });
+
     newBlocks[selected] = {
       ...newBlocks[selected],
-      y: newBlocks[selected].y + 1,
+      x: newXPos,
+      y: newYPos,
     };
 
     onUpdateLayers(newBlocks);
@@ -58,9 +92,20 @@ export function useKeys() {
     if (selected === null) return;
 
     const newBlocks = [...blocks];
+    const pos = {
+      x: newBlocks[selected].x - 1,
+      y: newBlocks[selected].y,
+    };
+
+    const { x: newXPos, y: newYPos } = getBoundingBox({
+      pos,
+      isRotatedEl: newBlocks[selected].rotated,
+    });
+
     newBlocks[selected] = {
       ...newBlocks[selected],
-      x: newBlocks[selected].x - 1,
+      x: newXPos,
+      y: newYPos,
     };
 
     onUpdateLayers(newBlocks);
