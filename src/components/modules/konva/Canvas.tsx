@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { Layer, Rect, Stage } from 'react-konva';
 
 import { getTheme } from 'utils';
-import { BLOCK_HEIGHT, BLOCK_WIDTH, STAGE_HEIGHT, STAGE_WIDTH } from 'utils/constants';
+import { BLOCK_HEIGHT, BLOCK_SIZE, BLOCK_WIDTH, STAGE_HEIGHT, STAGE_WIDTH } from 'utils/constants';
 
 import { Blocks } from './Blocks';
 import { Controls } from './Controls';
@@ -14,6 +14,7 @@ import { Sidebar } from './Sidebar';
 const theme = getTheme();
 
 // @TODO use and change order on blocks
+const MARGIN = BLOCK_SIZE * 6;
 
 function Canvas() {
   const [selected, setSelected] = useState<number | null>(null);
@@ -36,19 +37,20 @@ function Canvas() {
 
       <div className="relative">
         <Stage
-          width={STAGE_WIDTH}
-          height={STAGE_HEIGHT}
+          width={STAGE_WIDTH + MARGIN}
+          height={STAGE_HEIGHT + MARGIN}
           ref={stageRef}
           style={{
             position: 'absolute',
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
+            backgroundColor: theme.colors.solidtecBlack,
           }}
         >
           {/* <Grid /> */}
           <Layer>
-            <Pallet />
+            <Pallet layerMargin={MARGIN} />
             <Rect
               ref={shadowRef}
               x={0}
