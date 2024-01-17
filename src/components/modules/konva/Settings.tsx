@@ -1,7 +1,7 @@
 import { useModal } from 'hooks';
 import { btnClass } from 'common/interaction/Button';
 
-import { BlockSettingsModal } from './BlockSettingsModal';
+import { BlockSettingsModal } from './modals/BlockSettingsModal';
 
 export function Settings() {
   const [isOpen, onOpenModal, onCloseModal] = useModal();

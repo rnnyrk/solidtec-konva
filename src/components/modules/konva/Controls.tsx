@@ -1,3 +1,4 @@
+import { useModal } from 'hooks';
 import { useBlocks, useBoardStore, useCurrentLayer } from 'store/board';
 import {
   BLOCK_BASE,
@@ -11,13 +12,16 @@ import AddSvg from 'vectors/add.svg';
 import AlignHorizontalSvg from 'vectors/align-horizontal.svg';
 import AlignVerticalSvg from 'vectors/align-vertical.svg';
 import CarouselSvg from 'vectors/carousel.svg';
+import ReoderSvg from 'vectors/reorder.svg';
 import RotateSvg from 'vectors/rotate.svg';
-import { Button } from 'common/interaction/Button';
+import { btnClass, Button } from 'common/interaction/Button';
 
 import { useKonvaContext } from './KonvaContext';
+import { ReorderModal } from './modals/ReorderModal';
 
 export function Controls() {
   const { stageRef, selected, setSelected } = useKonvaContext()!;
+  const [isOpen, onOpenModal, onCloseModal] = useModal();
 
   const { currentLayerIndex, layers, setLayers } = useBoardStore();
   const blocks = useBlocks();
@@ -39,8 +43,6 @@ export function Controls() {
     setLayers(newLayers);
     setSelected(newLayerBlocks.length - 1);
   }
-
-  function onSplitEvenly() {}
 
   function onAlignVertical() {
     if (!stageRef.current || selected === null) return;
@@ -125,8 +127,11 @@ export function Controls() {
     stageRef.current.batchDraw();
   }
 
+  function onReorder() {}
+  function onSplitEvenly() {}
+
   return (
-    <div className="w-full absolute top-0 right-0 left-0 z-20 flex gap-2 p-2 bg-white shadow-md">
+    <div className="w-full absolute top-0 right-0 left-0 z-20 flex justify-end gap-2 p-2 bg-white shadow-md">
       <Button
         onClick={onAddBlock}
         disabled={blocks.length === MAX_BLOCKS}
@@ -136,21 +141,12 @@ export function Controls() {
       </Button>
 
       <Button
-        onClick={onSplitEvenly}
-        disabled={selected === null}
-        isIconOnly
-      >
-        <CarouselSvg className="w-8 h-8" />
-      </Button>
-
-      <Button
         onClick={onAlignVertical}
         disabled={selected === null}
         isIconOnly
       >
         <AlignVerticalSvg className="w-8 h-8" />
       </Button>
-
       <Button
         onClick={onAlignHorizontal}
         disabled={selected === null}
@@ -165,6 +161,30 @@ export function Controls() {
         isIconOnly
       >
         <RotateSvg className="w-8 h-8" />
+      </Button>
+
+      <ReorderModal
+        onClose={onCloseModal}
+        onOpen={onOpenModal}
+        isOpen={isOpen}
+        onCallback={onReorder}
+      >
+        <div
+          className={btnClass({
+            variant: 'primary',
+            isIconOnly: true,
+          })}
+        >
+          <ReoderSvg className="w-8 h-8" />
+        </div>
+      </ReorderModal>
+
+      <Button
+        onClick={onSplitEvenly}
+        disabled={selected === null}
+        isIconOnly
+      >
+        <CarouselSvg className="w-8 h-8" />
       </Button>
     </div>
   );

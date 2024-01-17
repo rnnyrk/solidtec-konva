@@ -6,7 +6,7 @@ import { BLOCK_BASE, BLOCK_HEIGHT, BLOCK_WIDTH, STAGE_HEIGHT, STAGE_WIDTH } from
 import { btnClass, Button } from 'common/interaction/Button';
 
 import { useKonvaContext } from './KonvaContext';
-import { NewLayerModal, type NewLayerModalValues } from './NewLayerModal';
+import { NewLayerModal, type NewLayerModalValues } from './modals/NewLayerModal';
 
 export function Layers() {
   const { stageRef, setSelected } = useKonvaContext()!;
