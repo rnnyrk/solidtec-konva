@@ -1,7 +1,7 @@
 import { UseFormReset } from 'react-hook-form';
 
 import { useModal } from 'hooks';
-import { useBlocks, useBoardStore, useCurrentLayer } from 'store/board';
+import { useBoardStore, useCurrentLayer } from 'store/board';
 import { BLOCK_BASE, BLOCK_HEIGHT, BLOCK_WIDTH, STAGE_HEIGHT, STAGE_WIDTH } from 'utils/constants';
 import { btnClass, Button } from 'common/interaction/Button';
 
@@ -14,7 +14,6 @@ export function Layers() {
 
   const { currentLayerIndex, setCurrentLayer, layers, setLayers } = useBoardStore();
   const currentLayer = useCurrentLayer();
-  const blocks = useBlocks();
 
   const stageWidthIncMargin = STAGE_WIDTH + currentLayer.collarMargin;
   const stageHeightIncMargin = STAGE_HEIGHT + currentLayer.collarMargin;
@@ -24,37 +23,38 @@ export function Layers() {
     setCurrentLayer(index);
   }
 
+  function onDuplicateLayer(data: NewLayerModalValues) {
+    let copyBlocks = [...currentLayer.blocks];
+
+    if (data.flipX) {
+      copyBlocks = copyBlocks.map((block) => ({
+        ...block,
+        x: stageWidthIncMargin - block.x - (block.rotated ? BLOCK_HEIGHT : BLOCK_WIDTH),
+      }));
+    }
+
+    if (data.flipY) {
+      copyBlocks = copyBlocks.map((block) => ({
+        ...block,
+        y: stageHeightIncMargin - block.y - (block.rotated ? BLOCK_WIDTH : BLOCK_HEIGHT),
+      }));
+    }
+
+    return copyBlocks;
+  }
+
   function onNewLayer(data: NewLayerModalValues, reset: UseFormReset<NewLayerModalValues>) {
     if (!stageRef.current) return;
 
-    let newBlocks = [...blocks];
-
+    let newBlocks = [BLOCK_BASE];
     if (data.duplicate) {
-      let copyBlocks = [...currentLayer.blocks];
-
-      if (data.flipX) {
-        copyBlocks = copyBlocks.map((block) => ({
-          ...block,
-          x: stageWidthIncMargin - block.x - (block.rotated ? BLOCK_HEIGHT : BLOCK_WIDTH),
-        }));
-      }
-
-      if (data.flipY) {
-        copyBlocks = copyBlocks.map((block) => ({
-          ...block,
-          y: stageHeightIncMargin - block.y - (block.rotated ? BLOCK_WIDTH : BLOCK_HEIGHT),
-        }));
-      }
-
-      newBlocks = [...copyBlocks];
-    } else {
-      newBlocks = [BLOCK_BASE];
+      newBlocks = [...onDuplicateLayer(data)];
     }
 
     const newLayers = [
       ...layers,
       {
-        collarMargin: data.duplicate ? currentLayer.collarMargin : 0,
+        collarMargin: data.duplicate ? currentLayer.collarMargin : Number(data.collarMargin),
         blocks: newBlocks,
       },
     ];

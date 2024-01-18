@@ -3,6 +3,7 @@ import { useForm, UseFormReset } from 'react-hook-form';
 
 import { type ModalProps } from 'hooks';
 import { useCurrentLayer } from 'store/board';
+import { validation } from 'utils';
 import { Checkbox } from 'common/form/Checkbox';
 import { Input } from 'common/form/Input';
 import { Button } from 'common/interaction/Button';
@@ -19,7 +20,7 @@ export type NewLayerModalValues = {
   duplicate: boolean;
   flipX: boolean;
   flipY: boolean;
-  collarMargin: number;
+  collarMargin: string;
 };
 
 export function NewLayerModal({
@@ -52,7 +53,7 @@ export function NewLayerModal({
     const flipYUndefined = typeof flipYEnabled === 'undefined';
 
     if (duplicateEnabled) {
-      setValue('collarMargin', currentLayer.collarMargin);
+      setValue('collarMargin', `${currentLayer.collarMargin}`);
     }
 
     if (!duplicateEnabled || flipXUndefined || flipYUndefined) {
@@ -109,7 +110,8 @@ export function NewLayerModal({
           <Input
             label="Collar margin (cm)"
             disabled={duplicateEnabled}
-            {...register('collarMargin')}
+            error={errors.collarMargin}
+            {...register('collarMargin', { ...validation.number })}
           />
 
           <Button

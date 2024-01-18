@@ -15,7 +15,7 @@ export const FormField: React.FC<FormFieldProps> = ({
       {label && <Label htmlFor={name}>{label}</Label>}
       {children}
       {(error || description) && (
-        <div className="text-red-700 mt-1 text-sm">
+        <div className="text-red-400 mt-1 text-sm">
           {error?.message || description || 'Dit veld is verplicht'}
         </div>
       )}

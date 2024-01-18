@@ -14,7 +14,6 @@ import { Sidebar } from './Sidebar';
 
 const theme = getTheme();
 
-// @TODO use and change order on blocks
 // @TODO change margin per layer (add collarMargin to AddNewLayerModal, now it's 0)
 // @TODO fix rotation in 4 steps
 // @TODO split evenly horizontal (multiple selected blocks)
