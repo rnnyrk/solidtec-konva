@@ -127,7 +127,6 @@ export function Controls() {
     stageRef.current.batchDraw();
   }
 
-  function onReorder() {}
   function onSplitEvenly() {}
 
   return (
@@ -167,12 +166,11 @@ export function Controls() {
         onClose={onCloseModal}
         onOpen={onOpenModal}
         isOpen={isOpen}
-        onCallback={onReorder}
-        disabled={blocks.length < 2}
+        disabled={selected === null || blocks.length < 2}
       >
         <div
           className={btnClass({
-            variant: blocks.length < 2 ? 'disabled' : 'primary',
+            variant: selected === null || blocks.length < 2 ? 'disabled' : 'primary',
             isIconOnly: true,
           })}
         >

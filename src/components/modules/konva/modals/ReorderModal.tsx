@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { type ModalProps } from 'hooks';
-import { useBlocks } from 'store/board';
+import { useBlocks, useBoardStore } from 'store/board';
 import { cn } from 'utils';
 import { Button } from 'common/interaction/Button';
 import {
@@ -14,16 +14,10 @@ import {
 
 import { useKonvaContext } from '../KonvaContext';
 
-export function ReorderModal({
-  children,
-  disabled,
-  onCallback,
-  onClose,
-  onOpen,
-  isOpen,
-}: ReorderModalProps) {
+export function ReorderModal({ children, disabled, onClose, onOpen, isOpen }: ReorderModalProps) {
   const { selected } = useKonvaContext()!;
   const blocks = useBlocks();
+  const { currentLayerIndex, layers, setLayers } = useBoardStore();
 
   const [switchBlock, setSwitchBlock] = useState<number | null>(null);
   const selectedOrder = selected !== null ? blocks[selected].order : null;
@@ -34,8 +28,28 @@ export function ReorderModal({
   }
 
   function onReorderBlocks() {
-    if (!switchBlock || !selectedOrder) return;
-    // @TODO change block.order of both block, sort on order in store
+    if (!switchBlock || !selected || !selectedOrder) return;
+
+    const newBlocks = [...blocks];
+    const currentSelected = newBlocks[selected];
+    const currentSwitch = newBlocks.find((block) => block.order === switchBlock)!;
+
+    // Switch orders of selected and switch block, sort by order in store
+    currentSelected.order = switchBlock;
+    currentSwitch.order = selectedOrder;
+
+    newBlocks[selected] = currentSwitch;
+    newBlocks[currentSwitch.order - 1] = currentSelected;
+
+    newBlocks.sort((a, b) => a.order - b.order);
+
+    // Update blocks on current layer
+    const newLayers = [...layers];
+    newLayers[currentLayerIndex].blocks = newBlocks;
+    setLayers(newLayers);
+
+    setSwitchBlock(null);
+    onClose();
   }
 
   return (
@@ -77,7 +91,7 @@ export function ReorderModal({
           </div>
 
           <Button
-            onClick={onCallback}
+            onClick={onReorderBlocks}
             className="mt-8"
             disabled={!switchBlock || !selectedOrder}
             size="xl"
@@ -93,5 +107,4 @@ export function ReorderModal({
 type ReorderModalProps = ModalProps & {
   children: React.ReactNode;
   disabled?: boolean;
-  onCallback: () => void;
 };
