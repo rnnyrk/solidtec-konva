@@ -75,6 +75,7 @@ export function ReorderModal({ children, disabled, onClose, onOpen, isOpen }: Re
             {blocks.map((block) => {
               return (
                 <button
+                  key={`reorder_block_${block.order}`}
                   onClick={() => onSetSwitchBlock(block.order)}
                   className={cn(
                     'w-16 h-16 flex items-center justify-center text-2xl border-2 border-primary text-primary bg-transparent shadow-md cursor-pointer mr-4 last:mr-0',
