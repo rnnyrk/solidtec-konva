@@ -2,7 +2,9 @@ import { useEffect } from 'react';
 import { useForm, UseFormReset } from 'react-hook-form';
 
 import { type ModalProps } from 'hooks';
+import { useCurrentLayer } from 'store/board';
 import { Checkbox } from 'common/form/Checkbox';
+import { Input } from 'common/form/Input';
 import { Button } from 'common/interaction/Button';
 import {
   Dialog,
@@ -17,6 +19,7 @@ export type NewLayerModalValues = {
   duplicate: boolean;
   flipX: boolean;
   flipY: boolean;
+  collarMargin: number;
 };
 
 export function NewLayerModal({
@@ -33,9 +36,12 @@ export function NewLayerModal({
     handleSubmit,
     formState: { errors },
     setValue,
-    watch,
+    register,
     reset,
+    watch,
   } = useForm<NewLayerModalValues>();
+
+  const currentLayer = useCurrentLayer();
 
   const flipXEnabled = watch('flipX');
   const flipYEnabled = watch('flipY');
@@ -44,6 +50,10 @@ export function NewLayerModal({
   useEffect(() => {
     const flipXUndefined = typeof flipXEnabled === 'undefined';
     const flipYUndefined = typeof flipYEnabled === 'undefined';
+
+    if (duplicateEnabled) {
+      setValue('collarMargin', currentLayer.collarMargin);
+    }
 
     if (!duplicateEnabled || flipXUndefined || flipYUndefined) {
       setValue('flipX', false);
@@ -75,14 +85,14 @@ export function NewLayerModal({
             label="Duplicate current layer"
             size="xl"
             checked={duplicateEnabled}
-            wrapperClassName="mb-8"
+            wrapperClassName="mb-4"
           />
           <Checkbox
             control={control}
             id="flipX"
             label="Flip layer on X axis"
             size="xl"
-            wrapperClassName="mb-8"
+            wrapperClassName="mb-4"
             checked={flipXEnabled}
             disabled={!duplicateEnabled}
           />
@@ -91,8 +101,15 @@ export function NewLayerModal({
             id="flipY"
             label="Flip layer on Y axis"
             size="xl"
+            wrapperClassName="mb-6"
             checked={flipYEnabled}
             disabled={!duplicateEnabled}
+          />
+
+          <Input
+            label="Collar margin (cm)"
+            disabled={duplicateEnabled}
+            {...register('collarMargin')}
           />
 
           <Button

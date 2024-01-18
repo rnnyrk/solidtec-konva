@@ -1,5 +1,7 @@
 import { forwardRef } from 'react';
 
+import { cn } from 'utils';
+
 import { FormField, type FormFieldProps } from './FormField';
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -27,7 +29,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         <div className="relative w-full">
           <input
             type="text"
-            className="bg-slate-200 rounded-md py-[12px] px-[16px] w-[80%] text-solidtecBlack"
+            className={cn(
+              'bg-transparent py-[12px] px-[16px] w-[80%]',
+              'rounded border-2 border-solidtecGray focus:border-primary outline-0 text-white',
+              'disabled:bg-gray-400 disabled:cursor-not-allowed',
+            )}
             {...{
               ...{ autoFocus, disabled, name, readOnly },
               ...(ref && { ref }),

@@ -4,7 +4,7 @@ export function Label({ children, className, htmlFor }: LabelProps) {
   return (
     <label
       htmlFor={htmlFor}
-      className={cn('text-sm font-semibold mb-[2px]', className)}
+      className={cn('font-semibold mb-2', className)}
     >
       {children}
     </label>

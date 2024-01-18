@@ -11,6 +11,8 @@ module.exports = {
         secondary: '#cf6a3c',
         secondaryDark: '#a3451a',
 
+        solidtecGray: '#585F66',
+
         solidtecBlack: '#252d33',
         solidtecBlackAccent: '#202224',
       },
