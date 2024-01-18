@@ -16,8 +16,9 @@ export const btnClass = ({
         variant === 'secondary',
       'bg-transparent border-2 border-primary text-primary hover:bg-primaryDark hover:border-primaryDark hover:text-white':
         variant === 'alternative',
+      'bg-slate-300 border-slate-300 text-slate-500 cursor-not-allowed': variant === 'disabled',
       'py-2 px-6 text-lg': size === 'xl',
-      'px-2 py-2': isIconOnly,
+      'w-14 h-14 flex items-center justify-center px-2 py-2': isIconOnly,
     },
     className,
   );
@@ -47,5 +48,5 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   children: React.ReactNode;
   isIconOnly?: boolean;
   size?: 'xl';
-  variant?: 'primary' | 'secondary' | 'alternative';
+  variant?: 'primary' | 'secondary' | 'alternative' | 'disabled';
 };

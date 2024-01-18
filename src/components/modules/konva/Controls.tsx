@@ -168,10 +168,11 @@ export function Controls() {
         onOpen={onOpenModal}
         isOpen={isOpen}
         onCallback={onReorder}
+        disabled={blocks.length < 2}
       >
         <div
           className={btnClass({
-            variant: 'primary',
+            variant: blocks.length < 2 ? 'disabled' : 'primary',
             isIconOnly: true,
           })}
         >

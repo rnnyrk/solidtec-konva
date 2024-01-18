@@ -8,10 +8,22 @@ import {
   DialogTrigger,
 } from 'common/interaction/Dialog';
 
-export function ReorderModal({ children, onCallback, onClose, onOpen, isOpen }: ReorderModalProps) {
+export function ReorderModal({
+  children,
+  disabled,
+  onCallback,
+  onClose,
+  onOpen,
+  isOpen,
+}: ReorderModalProps) {
   return (
     <Dialog open={isOpen}>
-      <DialogTrigger onClick={() => onOpen()}>{children}</DialogTrigger>
+      <DialogTrigger
+        onClick={() => onOpen()}
+        disabled={disabled}
+      >
+        {children}
+      </DialogTrigger>
       <DialogContent
         onClose={onClose}
         onEscapeKeyDown={onClose}
@@ -38,5 +50,6 @@ export function ReorderModal({ children, onCallback, onClose, onOpen, isOpen }: 
 
 type ReorderModalProps = ModalProps & {
   children: React.ReactNode;
+  disabled?: boolean;
   onCallback: () => void;
 };
