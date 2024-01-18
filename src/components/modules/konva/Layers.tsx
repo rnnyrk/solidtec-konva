@@ -30,7 +30,7 @@ export function Layers() {
     let newBlocks = [...blocks];
 
     if (data.duplicate) {
-      let copyBlocks = [...layers[currentLayerIndex].blocks];
+      let copyBlocks = [...currentLayer.blocks];
 
       if (data.flipX) {
         copyBlocks = copyBlocks.map((block) => ({
@@ -54,7 +54,7 @@ export function Layers() {
     const newLayers = [
       ...layers,
       {
-        collarMargin: 0,
+        collarMargin: data.duplicate ? currentLayer.collarMargin : 0,
         blocks: newBlocks,
       },
     ];
