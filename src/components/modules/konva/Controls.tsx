@@ -180,7 +180,7 @@ export function Controls() {
 
       <Button
         onClick={onSplitEvenly}
-        disabled={selected === null}
+        disabled={selected === null || blocks.length < 3}
         isIconOnly
       >
         <CarouselSvg className="w-8 h-8" />
