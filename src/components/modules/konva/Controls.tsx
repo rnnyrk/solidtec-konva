@@ -50,16 +50,27 @@ export function Controls() {
 
     const groupId = `#group[${currentLayerIndex}]-${selected}`;
     const el = stageRef.current.find(groupId)[0];
-    const isRotatedEl = blocks[selected].rotated;
 
-    let yPos = stageHeightIncMargin / 2 - BLOCK_HEIGHT / 2;
-    if (isRotatedEl) {
-      yPos = stageHeightIncMargin / 2 - BLOCK_WIDTH / 2;
+    const rotation = el.rotation();
+    let newYPos = el.y();
+
+    // Determine if the rectangle is in a vertical orientation (90 or 270 degrees)
+    const isVertical = rotation === 90 || rotation === 270;
+    const effectiveHeight = isVertical ? BLOCK_WIDTH : BLOCK_HEIGHT;
+
+    if (rotation === 0) {
+      newYPos = (stageHeightIncMargin - effectiveHeight) / 2;
+    } else if (rotation === 90) {
+      newYPos = (stageHeightIncMargin - effectiveHeight) / 2;
+    } else if (rotation === 180) {
+      newYPos = (stageHeightIncMargin + effectiveHeight) / 2;
+    } else if (rotation === 270) {
+      newYPos = (stageHeightIncMargin + effectiveHeight) / 2;
     }
 
     el.position({
       x: el.x(),
-      y: yPos,
+      y: newYPos,
     });
 
     stageRef.current.batchDraw();
@@ -70,15 +81,26 @@ export function Controls() {
 
     const groupId = `#group[${currentLayerIndex}]-${selected}`;
     const el = stageRef.current.find(groupId)[0];
-    const isRotatedEl = blocks[selected].rotated;
 
-    let xPos = stageWidthIncMargin / 2 - BLOCK_WIDTH / 2;
-    if (isRotatedEl) {
-      xPos = stageWidthIncMargin / 2 - BLOCK_HEIGHT / 2;
+    const rotation = el.rotation();
+    let newXPos = el.x();
+
+    // Determine if the rectangle is in a vertical orientation (90 or 270 degrees)
+    const isVertical = rotation === 90 || rotation === 270;
+    const effectiveWidth = isVertical ? BLOCK_HEIGHT : BLOCK_WIDTH;
+
+    if (rotation === 0) {
+      newXPos = (stageWidthIncMargin - effectiveWidth) / 2;
+    } else if (rotation === 90) {
+      newXPos = (stageWidthIncMargin + effectiveWidth) / 2;
+    } else if (rotation === 180) {
+      newXPos = (stageWidthIncMargin + effectiveWidth) / 2;
+    } else if (rotation === 270) {
+      newXPos = (stageWidthIncMargin - effectiveWidth) / 2;
     }
 
     el.position({
-      x: xPos,
+      x: newXPos,
       y: el.y(),
     });
 
@@ -95,24 +117,23 @@ export function Controls() {
     const newBlocks = [...blocks];
     const currentBlock = newBlocks[selected];
 
-    let rotated = currentBlock.rotated;
-
-    if (rotated === 0) {
-      rotated = 90;
-    } else if (rotated === 90) {
-      rotated = 180;
-    } else if (rotated === 180) {
-      rotated = 270;
-    } else if (rotated === 270) {
-      rotated = 0;
+    let rotation = currentBlock.rotation;
+    if (rotation === 0) {
+      rotation = 90;
+    } else if (rotation === 90) {
+      rotation = 180;
+    } else if (rotation === 180) {
+      rotation = 270;
+    } else if (rotation === 270) {
+      rotation = 0;
     }
 
-    rotateAroundCenter(groupEl, rotated);
+    rotateAroundCenter(groupEl, rotation);
 
     // Update width and height of the block in store after rotating
     newBlocks[selected] = {
       ...currentBlock,
-      rotated,
+      rotation,
     };
 
     const newLayers = [...layers];
