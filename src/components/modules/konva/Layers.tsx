@@ -29,14 +29,14 @@ export function Layers() {
     if (data.flipX) {
       copyBlocks = copyBlocks.map((block) => ({
         ...block,
-        x: stageWidthIncMargin - block.x - (block.rotated ? BLOCK_HEIGHT : BLOCK_WIDTH),
+        // x: stageWidthIncMargin - block.x - (block.rotation ? BLOCK_HEIGHT : BLOCK_WIDTH),
       }));
     }
 
     if (data.flipY) {
       copyBlocks = copyBlocks.map((block) => ({
         ...block,
-        y: stageHeightIncMargin - block.y - (block.rotated ? BLOCK_WIDTH : BLOCK_HEIGHT),
+        // y: stageHeightIncMargin - block.y - (block.rotation ? BLOCK_WIDTH : BLOCK_HEIGHT),
       }));
     }
 

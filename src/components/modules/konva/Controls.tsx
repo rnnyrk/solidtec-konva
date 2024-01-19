@@ -1,6 +1,5 @@
-import { useModal } from 'hooks';
+import { useBoundingBox, useModal } from 'hooks';
 import { useBlocks, useBoardStore, useCurrentLayer } from 'store/board';
-import { rotateAroundCenter } from 'utils';
 import {
   BLOCK_BASE,
   BLOCK_HEIGHT,
@@ -24,6 +23,7 @@ export function Controls() {
   const { stageRef, selected, setSelected } = useKonvaContext()!;
   const [isOpen, onOpenModal, onCloseModal] = useModal();
 
+  const { rotateAroundCenter } = useBoundingBox();
   const { currentLayerIndex, layers, setLayers } = useBoardStore();
   const blocks = useBlocks();
   const currentLayer = useCurrentLayer();
@@ -111,8 +111,8 @@ export function Controls() {
     if (!stageRef.current || selected === null) return;
 
     const groupEl = stageRef.current.find(`#group[${currentLayerIndex}]-${selected}`)[0];
-    const textEl = stageRef.current.find(`#text[${currentLayerIndex}]-${selected}`)[0];
-    const blockEl = stageRef.current.find(`#block[${currentLayerIndex}]-${selected}`)[0];
+    // const textEl = stageRef.current.find(`#text[${currentLayerIndex}]-${selected}`)[0];
+    // const blockEl = stageRef.current.find(`#block[${currentLayerIndex}]-${selected}`)[0];
 
     const newBlocks = [...blocks];
     const currentBlock = newBlocks[selected];
@@ -128,11 +128,13 @@ export function Controls() {
       rotation = 0;
     }
 
-    rotateAroundCenter(groupEl, rotation);
+    const { x: newXPos, y: newYPos } = rotateAroundCenter(groupEl, rotation);
 
     // Update width and height of the block in store after rotating
     newBlocks[selected] = {
       ...currentBlock,
+      x: newXPos,
+      y: newYPos,
       rotation,
     };
 

@@ -14,8 +14,7 @@ import { Sidebar } from './Sidebar';
 
 const theme = getTheme();
 
-// @TODO after rotating stay within bounding box
-// @TODO text stays default position when rotating
+// @TODO text stays default position when rotating in onRotate
 // @TODO duplicate layers with rotation
 // @TODO split evenly horizontal (multiple selected blocks)
 
