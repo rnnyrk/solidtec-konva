@@ -4,7 +4,7 @@ import useImage from 'use-image';
 
 import { useBoundingBox, useKeys } from 'hooks';
 import { useBlocks, useBoardStore } from 'store/board';
-import { BLOCK_HEIGHT, BLOCK_SIZE, BLOCK_WIDTH } from 'utils/constants';
+import { BLOCK_SIZE } from 'utils/constants';
 
 import { useKonvaContext } from './KonvaContext';
 
@@ -74,9 +74,9 @@ export function Blocks() {
     const pos = el.getAbsolutePosition();
 
     const elId = Number(el.attrs.id.split('-')[1]);
-    const rotated = blocks[elId].rotated;
+    const rotation = blocks[elId].rotation;
 
-    const { x: newXPos, y: newYPos } = getBoundingBox({ pos, rotated });
+    const { x: newXPos, y: newYPos } = getBoundingBox({ pos, rotation });
 
     el.setAbsolutePosition({
       x: newXPos,
@@ -84,7 +84,7 @@ export function Blocks() {
     });
 
     // Match shadow element relative to the current element
-    shadowRef.current.rotation(rotated);
+    shadowRef.current.rotation(rotation);
     shadowRef.current.position({
       x: Math.round(newXPos / BLOCK_SIZE) * BLOCK_SIZE,
       y: Math.round(newYPos / BLOCK_SIZE) * BLOCK_SIZE,
@@ -124,7 +124,6 @@ export function Blocks() {
               height={block.height - 36}
               x={0}
               y={30}
-              // y={(block.rotated ? 36 : 0) + 36}
               key={`text[${currentLayerIndex}]-${index}`}
               id={`text[${currentLayerIndex}]-${index}`}
               text={`${block.order}`}

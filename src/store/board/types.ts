@@ -11,5 +11,5 @@ export type Block = {
   y: number;
   width: number;
   height: number;
-  rotated: 0 | 90 | 180 | 270;
+  rotation: 0 | 90 | 180 | 270;
 };

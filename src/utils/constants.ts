@@ -16,5 +16,5 @@ export const BLOCK_BASE: i.Block = {
   y: 0,
   width: BLOCK_WIDTH,
   height: BLOCK_HEIGHT,
-  rotated: 0,
+  rotation: 0,
 };

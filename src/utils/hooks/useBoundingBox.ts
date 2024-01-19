@@ -6,7 +6,7 @@ import { BLOCK_HEIGHT, BLOCK_WIDTH, STAGE_HEIGHT, STAGE_WIDTH } from 'utils/cons
 export function useBoundingBox() {
   const currentLayer = useCurrentLayer();
 
-  function getBoundingBox({ pos, rotated }: GetBoundingBoxProps) {
+  function getBoundingBox({ pos, rotation }: GetBoundingBoxProps) {
     const stageWidthIncMargin = STAGE_WIDTH + currentLayer.collarMargin;
     const stageHeightIncMargin = STAGE_HEIGHT + currentLayer.collarMargin;
 
@@ -17,7 +17,7 @@ export function useBoundingBox() {
     let effectiveHeight = BLOCK_HEIGHT;
 
     // Determine if the rectangle is in a vertical orientation (90 or 270 degrees)
-    const isVertical = rotated === 90 || rotated === 270;
+    const isVertical = rotation === 90 || rotation === 270;
 
     if (isVertical) {
       effectiveWidth = BLOCK_HEIGHT;
@@ -31,17 +31,17 @@ export function useBoundingBox() {
     let maxY: number = stageHeightIncMargin - effectiveHeight;
 
     // Calculate the bounds based on rotation
-    if (rotated === 90) {
+    if (rotation === 90) {
       minX = effectiveWidth;
       maxX = stageWidthIncMargin;
       minY = 0;
       maxY = stageHeightIncMargin - effectiveHeight;
-    } else if (rotated === 180) {
+    } else if (rotation === 180) {
       minX = effectiveWidth;
       maxX = stageWidthIncMargin;
       minY = effectiveHeight;
       maxY = stageHeightIncMargin;
-    } else if (rotated === 270) {
+    } else if (rotation === 270) {
       minX = 0;
       maxX = stageWidthIncMargin - effectiveWidth;
       minY = effectiveHeight;
@@ -64,6 +64,6 @@ export function useBoundingBox() {
 }
 
 type GetBoundingBoxProps = {
-  rotated: i.Block['rotated'];
+  rotation: i.Block['rotation'];
   pos: { x: number; y: number };
 };

@@ -30,7 +30,7 @@ export function useKeys() {
 
     const { x: newXPos, y: newYPos } = getBoundingBox({
       pos,
-      isRotatedEl: newBlocks[selected].rotated,
+      rotation: newBlocks[selected].rotation,
     });
 
     newBlocks[selected] = {
@@ -53,7 +53,7 @@ export function useKeys() {
 
     const { x: newXPos, y: newYPos } = getBoundingBox({
       pos,
-      isRotatedEl: newBlocks[selected].rotated,
+      rotation: newBlocks[selected].rotation,
     });
 
     newBlocks[selected] = {
@@ -76,7 +76,7 @@ export function useKeys() {
 
     const { x: newXPos, y: newYPos } = getBoundingBox({
       pos,
-      isRotatedEl: newBlocks[selected].rotated,
+      rotation: newBlocks[selected].rotation,
     });
 
     newBlocks[selected] = {
@@ -99,7 +99,7 @@ export function useKeys() {
 
     const { x: newXPos, y: newYPos } = getBoundingBox({
       pos,
-      isRotatedEl: newBlocks[selected].rotated,
+      rotation: newBlocks[selected].rotation,
     });
 
     newBlocks[selected] = {

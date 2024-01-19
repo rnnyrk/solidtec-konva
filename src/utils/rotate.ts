@@ -14,7 +14,7 @@ const rotatePoint = ({ x, y }: { x: number; y: number }, rad: number) => {
 
 // https://konvajs.org/docs/posts/Position_vs_Offset.html
 // Will work for shapes with top-left origin, like rectangle
-export function rotateAroundCenter(node: Node, rotation: i.Block['rotated']) {
+export function rotateAroundCenter(node: Node, rotation: i.Block['rotation']) {
   // Current rotation origin (0, 0) relative to desired origin - center
   // (node.width()/2, node.height()/2)
   const topLeft = {
