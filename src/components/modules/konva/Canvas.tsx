@@ -17,6 +17,13 @@ const theme = getTheme();
 // @TODO text stays default position when rotating in onRotate
 // @TODO duplicate layers with rotation
 // @TODO split evenly horizontal (multiple selected blocks)
+// @TODO legenda with cm to inch based on BLOCK_SIZE
+
+// @TODO configuration
+// @TODO arrow for side of entering the canvas
+
+// @TODO write down offset on x,y when rotating
+// then use that to calculate final x,y after save
 
 function Canvas() {
   const currentLayer = useCurrentLayer();
