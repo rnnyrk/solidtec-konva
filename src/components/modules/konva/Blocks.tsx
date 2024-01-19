@@ -1,17 +1,18 @@
 import { KonvaEventObject } from 'konva/lib/Node';
 import { Group, Rect, Text } from 'react-konva';
+import useImage from 'use-image';
 
 import { useBoundingBox, useKeys } from 'hooks';
 import { useBlocks, useBoardStore } from 'store/board';
-import { getTheme } from 'utils';
 import { BLOCK_HEIGHT, BLOCK_SIZE, BLOCK_WIDTH } from 'utils/constants';
 
 import { useKonvaContext } from './KonvaContext';
 
-const theme = getTheme();
-
 export function Blocks() {
   const { stageRef, shadowRef, selected, setSelected } = useKonvaContext()!;
+
+  const [itemImg] = useImage('/images/item.jpg');
+  const [itemSelectedImg] = useImage('/images/item-selected.jpg');
 
   useKeys();
   const blocks = useBlocks();
@@ -73,9 +74,9 @@ export function Blocks() {
     const pos = el.getAbsolutePosition();
 
     const elId = Number(el.attrs.id.split('-')[1]);
-    const isRotatedEl = blocks[elId].rotated;
+    const rotated = blocks[elId].rotated;
 
-    const { x: newXPos, y: newYPos } = getBoundingBox({ pos, isRotatedEl });
+    const { x: newXPos, y: newYPos } = getBoundingBox({ pos, rotated });
 
     el.setAbsolutePosition({
       x: newXPos,
@@ -83,8 +84,7 @@ export function Blocks() {
     });
 
     // Match shadow element relative to the current element
-    shadowRef.current.width(isRotatedEl ? BLOCK_HEIGHT : BLOCK_WIDTH);
-    shadowRef.current.height(isRotatedEl ? BLOCK_WIDTH : BLOCK_HEIGHT);
+    shadowRef.current.rotation(rotated);
     shadowRef.current.position({
       x: Math.round(newXPos / BLOCK_SIZE) * BLOCK_SIZE,
       y: Math.round(newYPos / BLOCK_SIZE) * BLOCK_SIZE,
@@ -115,7 +115,7 @@ export function Blocks() {
               y={0}
               key={`block[${currentLayerIndex}]-${index}`}
               id={`block[${currentLayerIndex}]-${index}`}
-              fill={selected === index ? theme.colors.primaryAccent : theme.colors.white}
+              fillPatternImage={selected === index ? itemSelectedImg : itemImg}
               stroke="#ddd"
               strokeWidth={1}
             />
@@ -123,7 +123,8 @@ export function Blocks() {
               width={block.width}
               height={block.height - 36}
               x={0}
-              y={(block.rotated ? 36 : 0) + 36}
+              y={30}
+              // y={(block.rotated ? 36 : 0) + 36}
               key={`text[${currentLayerIndex}]-${index}`}
               id={`text[${currentLayerIndex}]-${index}`}
               text={`${block.order}`}
