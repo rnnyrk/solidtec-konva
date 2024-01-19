@@ -1,5 +1,6 @@
 import { useModal } from 'hooks';
 import { useBlocks, useBoardStore, useCurrentLayer } from 'store/board';
+import { rotateAroundCenter } from 'utils';
 import {
   BLOCK_BASE,
   BLOCK_HEIGHT,
@@ -94,29 +95,23 @@ export function Controls() {
     const newBlocks = [...blocks];
     const currentBlock = newBlocks[selected];
 
-    // Reset element to initial value or update to rotated value
-    let newSizes = { width: BLOCK_WIDTH, height: BLOCK_HEIGHT };
     let rotated = currentBlock.rotated;
 
-    if (rotated) {
-      rotated = false;
-    } else {
-      // Flip width and height and set rotated
-      rotated = true;
-      newSizes = { width: BLOCK_HEIGHT, height: BLOCK_WIDTH };
+    if (rotated === 0) {
+      rotated = 90;
+    } else if (rotated === 90) {
+      rotated = 180;
+    } else if (rotated === 180) {
+      rotated = 270;
+    } else if (rotated === 270) {
+      rotated = 0;
     }
 
-    groupEl.setAttrs({ ...newSizes });
-    blockEl.setAttrs({ ...newSizes });
-    textEl.setAttrs({
-      ...newSizes,
-      height: BLOCK_HEIGHT - 36,
-    });
+    rotateAroundCenter(groupEl, rotated);
 
     // Update width and height of the block in store after rotating
     newBlocks[selected] = {
       ...currentBlock,
-      ...newSizes,
       rotated,
     };
 
