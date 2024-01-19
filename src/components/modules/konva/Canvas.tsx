@@ -14,8 +14,9 @@ import { Sidebar } from './Sidebar';
 
 const theme = getTheme();
 
-// @TODO change margin per layer (add collarMargin to AddNewLayerModal, now it's 0)
-// @TODO fix rotation in 4 steps
+// @TODO after rotating stay within bounding box
+// @TODO text stays default position when rotating
+// @TODO duplicate layers with rotation
 // @TODO split evenly horizontal (multiple selected blocks)
 
 function Canvas() {
