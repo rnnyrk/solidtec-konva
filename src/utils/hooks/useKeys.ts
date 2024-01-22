@@ -24,17 +24,17 @@ export function useKeys() {
 
     const newBlocks = [...blocks];
     const pos = {
-      x: newBlocks[selected].x,
-      y: newBlocks[selected].y - 1,
+      x: newBlocks[selected[0]].x,
+      y: newBlocks[selected[0]].y - 1,
     };
 
     const { x: newXPos, y: newYPos } = getBoundingBox({
       pos,
-      rotation: newBlocks[selected].rotation,
+      rotation: newBlocks[selected[0]].rotation,
     });
 
-    newBlocks[selected] = {
-      ...newBlocks[selected],
+    newBlocks[selected[0]] = {
+      ...newBlocks[selected[0]],
       x: newXPos,
       y: newYPos,
     };
@@ -47,17 +47,17 @@ export function useKeys() {
 
     const newBlocks = [...blocks];
     const pos = {
-      x: newBlocks[selected].x + 1,
-      y: newBlocks[selected].y,
+      x: newBlocks[selected[0]].x + 1,
+      y: newBlocks[selected[0]].y,
     };
 
     const { x: newXPos, y: newYPos } = getBoundingBox({
       pos,
-      rotation: newBlocks[selected].rotation,
+      rotation: newBlocks[selected[0]].rotation,
     });
 
-    newBlocks[selected] = {
-      ...newBlocks[selected],
+    newBlocks[selected[0]] = {
+      ...newBlocks[selected[0]],
       x: newXPos,
       y: newYPos,
     };
@@ -70,17 +70,17 @@ export function useKeys() {
 
     const newBlocks = [...blocks];
     const pos = {
-      x: newBlocks[selected].x,
-      y: newBlocks[selected].y + 1,
+      x: newBlocks[selected[0]].x,
+      y: newBlocks[selected[0]].y + 1,
     };
 
     const { x: newXPos, y: newYPos } = getBoundingBox({
       pos,
-      rotation: newBlocks[selected].rotation,
+      rotation: newBlocks[selected[0]].rotation,
     });
 
-    newBlocks[selected] = {
-      ...newBlocks[selected],
+    newBlocks[selected[0]] = {
+      ...newBlocks[selected[0]],
       x: newXPos,
       y: newYPos,
     };
@@ -93,17 +93,17 @@ export function useKeys() {
 
     const newBlocks = [...blocks];
     const pos = {
-      x: newBlocks[selected].x - 1,
-      y: newBlocks[selected].y,
+      x: newBlocks[selected[0]].x - 1,
+      y: newBlocks[selected[0]].y,
     };
 
     const { x: newXPos, y: newYPos } = getBoundingBox({
       pos,
-      rotation: newBlocks[selected].rotation,
+      rotation: newBlocks[selected[0]].rotation,
     });
 
-    newBlocks[selected] = {
-      ...newBlocks[selected],
+    newBlocks[selected[0]] = {
+      ...newBlocks[selected[0]],
       x: newXPos,
       y: newYPos,
     };

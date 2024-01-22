@@ -27,7 +27,7 @@ const theme = getTheme();
 
 function Canvas() {
   const currentLayer = useCurrentLayer();
-  const [selected, setSelected] = useState<number | null>(null);
+  const [selected, setSelected] = useState<number[] | null>(null);
 
   const blockLayerRef = useRef<any | null>(null);
   const stageRef = useRef<any | null>(null);

@@ -42,7 +42,7 @@ export function Controls() {
     newLayers[currentLayerIndex].blocks = newLayerBlocks;
 
     setLayers(newLayers);
-    setSelected(newLayerBlocks.length - 1);
+    setSelected([newLayerBlocks.length - 1]);
   }
 
   function onAlignVertical() {
@@ -115,7 +115,7 @@ export function Controls() {
     // const blockEl = stageRef.current.find(`#block[${currentLayerIndex}]-${selected}`)[0];
 
     const newBlocks = [...blocks];
-    const currentBlock = newBlocks[selected];
+    const currentBlock = newBlocks[selected[0]];
 
     let rotation = currentBlock.rotation;
     if (rotation === 0) {
@@ -131,7 +131,7 @@ export function Controls() {
     const { x: newXPos, y: newYPos } = rotateAroundCenter(groupEl, rotation);
 
     // Update width and height of the block in store after rotating
-    newBlocks[selected] = {
+    newBlocks[selected[0]] = {
       ...currentBlock,
       x: newXPos,
       y: newYPos,

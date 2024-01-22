@@ -31,14 +31,14 @@ export function ReorderModal({ children, disabled, onClose, onOpen, isOpen }: Re
     if (!switchBlock || !selected || !selectedOrder) return;
 
     const newBlocks = [...blocks];
-    const currentSelected = newBlocks[selected];
+    const currentSelected = newBlocks[selected[0]];
     const currentSwitch = newBlocks.find((block) => block.order === switchBlock)!;
 
     // Switch orders of selected and switch block, sort by order in store
     currentSelected.order = switchBlock;
     currentSwitch.order = selectedOrder;
 
-    newBlocks[selected] = currentSwitch;
+    newBlocks[selected[0]] = currentSwitch;
     newBlocks[currentSwitch.order - 1] = currentSelected;
 
     newBlocks.sort((a, b) => a.order - b.order);

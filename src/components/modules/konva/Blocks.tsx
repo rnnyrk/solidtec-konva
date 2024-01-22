@@ -20,12 +20,33 @@ export function Blocks() {
   const { currentLayerIndex, layers, setLayers } = useBoardStore();
 
   function onActivate(index: number) {
-    if (selected === index) {
-      setSelected(null);
+    // If nothing is selected, select current pressed item
+    if (selected === null) {
+      setSelected([index]);
       return;
     }
 
-    setSelected(index);
+    // If current pressed item is already selected, remove from selected array
+    if (selected !== null && selected.length > 0 && selected.includes(index)) {
+      const selectedIndex = selected.indexOf(index);
+      if (selectedIndex > -1) {
+        selected.splice(index, 1);
+      }
+
+      if (selected.length === 0) {
+        setSelected(null);
+        return;
+      }
+
+      setSelected(selected);
+      return;
+    }
+
+    // If there is any item selected, but not the current, add to selected array
+    if (selected !== null && selected.length > 0 && !selected.includes(index)) {
+      selected.push(index);
+      setSelected(selected);
+    }
   }
 
   function onDragStart(event: KonvaEventObject<DragEvent>) {
@@ -115,7 +136,7 @@ export function Blocks() {
               y={0}
               key={`block[${currentLayerIndex}]-${index}`}
               id={`block[${currentLayerIndex}]-${index}`}
-              fillPatternImage={selected === index ? itemSelectedImg : itemImg}
+              fillPatternImage={selected?.includes(index) ? itemSelectedImg : itemImg}
               stroke="#ddd"
               strokeWidth={1}
             />
