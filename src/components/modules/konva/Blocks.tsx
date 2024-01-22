@@ -30,7 +30,7 @@ export function Blocks() {
     if (selected !== null && selected.length > 0 && selected.includes(index)) {
       const selectedIndex = selected.indexOf(index);
       if (selectedIndex > -1) {
-        selected.splice(index, 1);
+        selected.splice(selectedIndex, 1);
       }
 
       if (selected.length === 0) {
