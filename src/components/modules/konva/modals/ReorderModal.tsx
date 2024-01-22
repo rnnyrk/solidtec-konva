@@ -20,7 +20,7 @@ export function ReorderModal({ children, disabled, onClose, onOpen, isOpen }: Re
   const { currentLayerIndex, layers, setLayers } = useBoardStore();
 
   const [switchBlock, setSwitchBlock] = useState<number | null>(null);
-  const selectedOrder = selected !== null ? blocks[selected].order : null;
+  const selectedOrder = selected !== null ? blocks[selected[0]].order : null;
 
   function onSetSwitchBlock(order: number) {
     if (selectedOrder === order) return;
