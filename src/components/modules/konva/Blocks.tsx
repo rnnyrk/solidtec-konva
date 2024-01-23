@@ -20,32 +20,34 @@ export function Blocks() {
   const { currentLayerIndex, layers, setLayers } = useBoardStore();
 
   function onActivate(index: number) {
+    const newSelected = selected ? [...selected] : null;
+
     // If nothing is selected, select current pressed item
-    if (selected === null) {
+    if (newSelected === null) {
       setSelected([index]);
       return;
     }
 
     // If current pressed item is already selected, remove from selected array
-    if (selected !== null && selected.length > 0 && selected.includes(index)) {
-      const selectedIndex = selected.indexOf(index);
+    if (newSelected !== null && newSelected.length > 0 && newSelected.includes(index)) {
+      const selectedIndex = newSelected.indexOf(index);
       if (selectedIndex > -1) {
-        selected.splice(selectedIndex, 1);
+        newSelected.splice(selectedIndex, 1);
       }
 
-      if (selected.length === 0) {
+      if (newSelected.length === 0) {
         setSelected(null);
         return;
       }
 
-      setSelected(selected);
+      setSelected(newSelected);
       return;
     }
 
     // If there is any item selected, but not the current, add to selected array
-    if (selected !== null && selected.length > 0 && !selected.includes(index)) {
-      selected.push(index);
-      setSelected(selected);
+    if (newSelected !== null && newSelected.length > 0 && !newSelected.includes(index)) {
+      newSelected.push(index);
+      setSelected(newSelected);
     }
   }
 
@@ -117,6 +119,8 @@ export function Blocks() {
   return (
     <>
       {blocks.map((block, index) => {
+        console.log({ index, includes: selected?.includes(index) });
+
         return (
           <Group
             {...block}
@@ -136,7 +140,7 @@ export function Blocks() {
               y={0}
               key={`block[${currentLayerIndex}]-${index}`}
               id={`block[${currentLayerIndex}]-${index}`}
-              fillPatternImage={selected?.includes(index) ? itemSelectedImg : itemImg}
+              fillPatternImage={selected && selected.includes(index) ? itemSelectedImg : itemImg}
               stroke="#ddd"
               strokeWidth={1}
             />
