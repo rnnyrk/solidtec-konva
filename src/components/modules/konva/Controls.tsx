@@ -70,8 +70,6 @@ export function Controls() {
       x: el.x(),
       y: newYPos,
     });
-
-    stageRef.current.batchDraw();
   }
 
   function onAlignHorizontal() {
@@ -101,8 +99,6 @@ export function Controls() {
       x: newXPos,
       y: el.y(),
     });
-
-    stageRef.current.batchDraw();
   }
 
   function onRotate() {
@@ -137,8 +133,6 @@ export function Controls() {
     const newLayers = [...layers];
     newLayers[currentLayerIndex].blocks = newBlocks;
     setLayers(newLayers);
-
-    stageRef.current.batchDraw();
   }
 
   function onReorder() {
@@ -204,7 +198,7 @@ export function Controls() {
       </Button>
       <Button
         onClick={onSplitEvenly}
-        disabled={selected === null || blocks.length < 3}
+        disabled={selected === null || selected.length < 3 || blocks.length < 3}
         isIconOnly
       >
         <CarouselSvg className="w-8 h-8" />

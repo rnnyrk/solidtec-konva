@@ -112,8 +112,6 @@ export function Blocks() {
       x: Math.round(newXPos / BLOCK_SIZE) * BLOCK_SIZE,
       y: Math.round(newYPos / BLOCK_SIZE) * BLOCK_SIZE,
     });
-
-    stageRef.current.batchDraw();
   }
 
   return (
