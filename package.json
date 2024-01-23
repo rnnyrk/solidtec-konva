@@ -13,7 +13,7 @@
     "prettier": "prettier --write '**/*.{js,ts,tsx}'",
     "typecheck": "tsc --noEmit",
     "test": "npx concurrently 'npm run lint' 'npm run typecheck'",
-    "export": "npx http-server --cors 'dist/index.html' -o -p 9000"
+    "export": "npx http-server --cors 'dist/' -o -p 9000"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "1.0.4",
