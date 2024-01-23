@@ -155,7 +155,40 @@ export function Controls() {
     setLayers(newLayers);
   }
 
-  function onSplitEvenly() {}
+  function onSplitEvenly() {
+    if (blocks.length < 3) return;
+
+    let totalEffectiveWidth = 0;
+    const blockEffectiveWidths = blocks.map((block) => {
+      // Check rotation and swap width/height
+      const isVertical = block.rotation === 90 || block.rotation === 270;
+      const effectiveWidth = isVertical ? BLOCK_HEIGHT : BLOCK_WIDTH;
+
+      totalEffectiveWidth += effectiveWidth;
+      return effectiveWidth;
+    });
+
+    const totalSpacingWidth = stageWidthIncMargin - totalEffectiveWidth;
+    const spacing = totalSpacingWidth / (blocks.length - 1);
+
+    let currentPosition = 0;
+    const newBlocks = blocks.map((block, index) => {
+      // Use the effective width for X position calculation
+      const effectiveWidth = blockEffectiveWidths[index];
+      const x = currentPosition;
+      // Update currentPosition for the next block
+      currentPosition += effectiveWidth + spacing;
+
+      return {
+        ...block,
+        x,
+      };
+    });
+
+    const newLayers = [...layers];
+    newLayers[currentLayerIndex].blocks = newBlocks;
+    setLayers(newLayers);
+  }
 
   return (
     <div className="w-full absolute top-0 right-0 left-0 z-20 flex justify-end gap-2 p-2 bg-white shadow-md">
@@ -169,14 +202,14 @@ export function Controls() {
 
       <Button
         onClick={onAlignVertical}
-        disabled={selected === null}
+        disabled={selected === null || selected.length > 1}
         isIconOnly
       >
         <AlignVerticalSvg className="w-8 h-8" />
       </Button>
       <Button
         onClick={onAlignHorizontal}
-        disabled={selected === null}
+        disabled={selected === null || selected.length > 1}
         isIconOnly
       >
         <AlignHorizontalSvg className="w-8 h-8" />
@@ -184,7 +217,7 @@ export function Controls() {
 
       <Button
         onClick={onRotate}
-        disabled={selected === null}
+        disabled={selected === null || selected.length > 1}
         isIconOnly
       >
         <RotateSvg className="w-8 h-8" />

@@ -14,8 +14,8 @@ import { Sidebar } from './Sidebar';
 
 const theme = getTheme();
 
-// @TODO duplicate layers with rotation
 // @TODO split evenly horizontal 3 > blocks
+// @TODO duplicate layers with rotation
 
 // @TODO configuration
 // @TODO arrow for side of entering the canvas
