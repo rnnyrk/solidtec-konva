@@ -109,8 +109,6 @@ export function Controls() {
     if (!stageRef.current || selected === null) return;
 
     const groupEl = stageRef.current.find(`#group[${currentLayerIndex}]-${selected}`)[0];
-    // const textEl = stageRef.current.find(`#text[${currentLayerIndex}]-${selected}`)[0];
-    // const blockEl = stageRef.current.find(`#block[${currentLayerIndex}]-${selected}`)[0];
 
     const newBlocks = [...blocks];
     const currentBlock = newBlocks[selected[0]];

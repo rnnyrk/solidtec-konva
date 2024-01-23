@@ -119,6 +119,21 @@ export function Blocks() {
   return (
     <>
       {blocks.map((block, index) => {
+        const isVertical = block.rotation === 90 || block.rotation === 270;
+
+        let textOffsetX = 0;
+        let textOffsetY = 0;
+        if (block.rotation === 90) {
+          textOffsetX = block.height;
+          textOffsetY = 0;
+        } else if (block.rotation === 180) {
+          textOffsetX = block.width;
+          textOffsetY = block.height;
+        } else if (block.rotation === 270) {
+          textOffsetX = 0;
+          textOffsetY = block.width;
+        }
+
         return (
           <Group
             {...block}
@@ -143,15 +158,19 @@ export function Blocks() {
               strokeWidth={1}
             />
             <Text
-              width={block.width}
-              height={block.height - 36}
+              width={isVertical ? block.height : block.width}
+              height={isVertical ? block.width : block.height}
               x={0}
-              y={30}
+              y={0}
+              offsetX={textOffsetX}
+              offsetY={textOffsetY}
+              rotation={-block.rotation}
               key={`text[${currentLayerIndex}]-${index}`}
               id={`text[${currentLayerIndex}]-${index}`}
               text={`${block.order}`}
               fontSize={60}
               align="center"
+              verticalAlign="middle"
             />
           </Group>
         );
