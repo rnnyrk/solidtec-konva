@@ -1,4 +1,4 @@
-import { useBoundingBox, useModal } from 'hooks';
+import { useBoundingBox } from 'hooks';
 import { useBlocks, useBoardStore, useCurrentLayer } from 'store/board';
 import {
   BLOCK_BASE,
@@ -14,14 +14,12 @@ import AlignVerticalSvg from 'vectors/align-vertical.svg';
 import CarouselSvg from 'vectors/carousel.svg';
 import ReoderSvg from 'vectors/reorder.svg';
 import RotateSvg from 'vectors/rotate.svg';
-import { btnClass, Button } from 'common/interaction/Button';
+import { Button } from 'common/interaction/Button';
 
 import { useKonvaContext } from './KonvaContext';
-import { ReorderModal } from './modals/ReorderModal';
 
 export function Controls() {
   const { stageRef, selected, setSelected } = useKonvaContext()!;
-  const [isOpen, onOpenModal, onCloseModal] = useModal();
 
   const { rotateAroundCenter } = useBoundingBox();
   const { currentLayerIndex, layers, setLayers } = useBoardStore();
@@ -145,6 +143,26 @@ export function Controls() {
     stageRef.current.batchDraw();
   }
 
+  function onReorder() {
+    if (selected === null || selected.length !== 2) return;
+
+    const newBlocks = [...blocks];
+
+    const firstBlockOrder = newBlocks[selected[0]].order;
+    const secondBlockOrder = newBlocks[selected[1]].order;
+
+    // Switch orders of selected and switch block, sort by order in store
+    newBlocks[selected[0]].order = secondBlockOrder;
+    newBlocks[selected[1]].order = firstBlockOrder;
+
+    newBlocks.sort((a, b) => a.order - b.order);
+
+    // Update blocks on current layer
+    const newLayers = [...layers];
+    newLayers[currentLayerIndex].blocks = newBlocks;
+    setLayers(newLayers);
+  }
+
   function onSplitEvenly() {}
 
   return (
@@ -179,23 +197,13 @@ export function Controls() {
       >
         <RotateSvg className="w-8 h-8" />
       </Button>
-
-      <ReorderModal
-        onClose={onCloseModal}
-        onOpen={onOpenModal}
-        isOpen={isOpen}
-        disabled={selected === null || blocks.length < 2}
+      <Button
+        onClick={onReorder}
+        disabled={selected === null || selected.length !== 2}
+        isIconOnly
       >
-        <div
-          className={btnClass({
-            variant: selected === null || blocks.length < 2 ? 'disabled' : 'primary',
-            isIconOnly: true,
-          })}
-        >
-          <ReoderSvg className="w-8 h-8" />
-        </div>
-      </ReorderModal>
-
+        <ReoderSvg className="w-8 h-8" />
+      </Button>
       <Button
         onClick={onSplitEvenly}
         disabled={selected === null || blocks.length < 3}
