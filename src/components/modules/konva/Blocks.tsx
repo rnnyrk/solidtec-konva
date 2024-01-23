@@ -119,8 +119,6 @@ export function Blocks() {
   return (
     <>
       {blocks.map((block, index) => {
-        console.log({ index, includes: selected?.includes(index) });
-
         return (
           <Group
             {...block}
