@@ -14,14 +14,16 @@ export function Pallet() {
   const originalImageHeight = 361;
   const originalImageWidth = 542;
 
+  const collarMargin = currentLayer.collarMargin * 2;
+
   const scaleY = STAGE_HEIGHT / originalImageHeight;
   const scaleX = STAGE_WIDTH / originalImageWidth;
   const scale = Math.max(scaleX, scaleY);
 
   const imageWidth = originalImageWidth * scaleX;
   const imageHeight = originalImageHeight * scaleY;
-  const stageWidthIncMargin = STAGE_WIDTH + currentLayer.collarMargin;
-  const stageHeightIncMargin = STAGE_HEIGHT + currentLayer.collarMargin;
+  const stageWidthIncMargin = STAGE_WIDTH + collarMargin;
+  const stageHeightIncMargin = STAGE_HEIGHT + collarMargin;
 
   const xCenter = (stageWidthIncMargin - imageWidth) / 2;
   const yCenter = (stageHeightIncMargin - imageHeight) / 2;

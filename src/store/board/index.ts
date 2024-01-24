@@ -24,7 +24,7 @@ export const useBoardStore = create<BoardStore>()((set) => ({
 
   layers: [
     {
-      collarMargin: BLOCK_SIZE * 6,
+      collarMargin: BLOCK_SIZE * 3,
       blocks: [BLOCK_BASE],
     },
   ],

@@ -32,6 +32,8 @@ function Canvas() {
   const stageRef = useRef<any | null>(null);
   const shadowRef = useRef<any | null>(null);
 
+  const collarMargin = currentLayer.collarMargin * 2;
+
   return (
     <KonvaContext.Provider
       value={{
@@ -46,8 +48,8 @@ function Canvas() {
 
       <div className="relative">
         <Stage
-          width={STAGE_WIDTH + currentLayer.collarMargin}
-          height={STAGE_HEIGHT + currentLayer.collarMargin}
+          width={STAGE_WIDTH + collarMargin}
+          height={STAGE_HEIGHT + collarMargin}
           ref={stageRef}
           style={{
             position: 'absolute',
