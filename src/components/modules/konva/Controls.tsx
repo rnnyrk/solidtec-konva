@@ -155,7 +155,7 @@ export function Controls() {
     setLayers(newLayers);
   }
 
-  function onSplitEvenly() {
+  function onSplitEvenlyHorizontal() {
     if (blocks.length < 3) return;
 
     let totalEffectiveWidth = 0;
@@ -168,7 +168,7 @@ export function Controls() {
       return effectiveWidth;
     });
 
-    // Use width without margins to use pallet spacing
+    // Use STAGE_WIDTH without margins to use pallet spacing
     const totalSpacingWidth = STAGE_WIDTH - totalEffectiveWidth;
     const spacing = totalSpacingWidth / (blocks.length - 1);
 
@@ -194,6 +194,53 @@ export function Controls() {
       return {
         ...block,
         x,
+      };
+    });
+
+    const newLayers = [...layers];
+    newLayers[currentLayerIndex].blocks = newBlocks;
+    setLayers(newLayers);
+  }
+
+  function onSplitEvenlyVertical() {
+    if (blocks.length < 3) return;
+
+    let totalEffectiveHeight = 0;
+    const blockEffectiveHeights = blocks.map((block) => {
+      // Check rotation and swap width/height
+      const isHorizontal = block.rotation === 0 || block.rotation === 180;
+      const effectiveHeight = isHorizontal ? BLOCK_HEIGHT : BLOCK_WIDTH;
+
+      totalEffectiveHeight += effectiveHeight;
+      return effectiveHeight;
+    });
+
+    // Use STAGE_HEIGHT without margins to use pallet spacing
+    const totalSpacingHeight = STAGE_HEIGHT - totalEffectiveHeight;
+    const spacing = totalSpacingHeight / (blocks.length - 1);
+
+    // Start with collarMargin as offset from the top
+    let currentPosition = currentLayer.collarMargin;
+    const newBlocks = blocks.map((block, index) => {
+      let rotationOffset = 0;
+      if (block.rotation === 90) {
+        rotationOffset = 0;
+      } else if (block.rotation === 180) {
+        rotationOffset = BLOCK_HEIGHT;
+      } else if (block.rotation === 270) {
+        rotationOffset = BLOCK_WIDTH;
+      }
+
+      // Use the effective height for Y position calculation
+      const effectiveHeight = blockEffectiveHeights[index];
+      const y = currentPosition + rotationOffset;
+
+      // Update currentPosition for the next block
+      currentPosition += effectiveHeight + spacing;
+
+      return {
+        ...block,
+        y,
       };
     });
 
@@ -242,11 +289,18 @@ export function Controls() {
         <ReoderSvg className="w-8 h-8" />
       </Button>
       <Button
-        onClick={onSplitEvenly}
+        onClick={onSplitEvenlyHorizontal}
         disabled={selected === null || selected.length < 3 || blocks.length < 3}
         isIconOnly
       >
         <CarouselSvg className="w-8 h-8" />
+      </Button>
+      <Button
+        onClick={onSplitEvenlyVertical}
+        disabled={selected === null || selected.length < 3 || blocks.length < 3}
+        isIconOnly
+      >
+        <CarouselSvg className="w-8 h-8 rotate-90" />
       </Button>
     </div>
   );
