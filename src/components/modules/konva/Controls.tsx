@@ -168,14 +168,26 @@ export function Controls() {
       return effectiveWidth;
     });
 
-    const totalSpacingWidth = stageWidthIncMargin - totalEffectiveWidth;
+    // Use width without margins to use pallet spacing
+    const totalSpacingWidth = STAGE_WIDTH - totalEffectiveWidth;
     const spacing = totalSpacingWidth / (blocks.length - 1);
 
-    let currentPosition = 0;
+    // Start with collarMargin as offset from the left
+    let currentPosition = currentLayer.collarMargin;
     const newBlocks = blocks.map((block, index) => {
+      let rotationOffset = 0;
+      if (block.rotation === 90) {
+        rotationOffset = BLOCK_HEIGHT;
+      } else if (block.rotation === 180) {
+        rotationOffset = BLOCK_WIDTH;
+      } else if (block.rotation === 270) {
+        rotationOffset = 0;
+      }
+
       // Use the effective width for X position calculation
       const effectiveWidth = blockEffectiveWidths[index];
-      const x = currentPosition;
+      const x = currentPosition + rotationOffset;
+
       // Update currentPosition for the next block
       currentPosition += effectiveWidth + spacing;
 
