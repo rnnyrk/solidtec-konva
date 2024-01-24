@@ -46,7 +46,7 @@ export function Controls() {
   function onAlignVertical() {
     if (!stageRef.current || selected === null) return;
 
-    const groupId = `#group[${currentLayerIndex}]-${selected}`;
+    const groupId = `#group[${currentLayerIndex}]-${selected[0]}`;
     const el = stageRef.current.find(groupId)[0];
 
     const rotation = el.rotation();
@@ -75,7 +75,7 @@ export function Controls() {
   function onAlignHorizontal() {
     if (!stageRef.current || selected === null) return;
 
-    const groupId = `#group[${currentLayerIndex}]-${selected}`;
+    const groupId = `#group[${currentLayerIndex}]-${selected[0]}`;
     const el = stageRef.current.find(groupId)[0];
 
     const rotation = el.rotation();
