@@ -14,6 +14,8 @@ import { Sidebar } from './Sidebar';
 
 const theme = getTheme();
 
+// Use selected instead of blocks in split evenly
+
 // @TODO split evenly horizontal 3 > blocks
 // @TODO duplicate layers with rotation
 
