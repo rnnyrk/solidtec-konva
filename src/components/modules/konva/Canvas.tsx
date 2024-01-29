@@ -9,14 +9,13 @@ import { Blocks } from './Blocks';
 import { Controls } from './Controls';
 // import { Grid } from './Grid';
 import { KonvaContext } from './KonvaContext';
+import { Legend } from './Legend';
 import { Pallet } from './Pallet';
 import { Sidebar } from './Sidebar';
 
 const theme = getTheme();
 
-// Use selected instead of blocks in split evenly
-
-// @TODO split evenly horizontal 3 > blocks
+// @TODO Use selected instead of blocks in split evenly
 // @TODO duplicate layers with rotation
 
 // @TODO configuration
@@ -49,6 +48,7 @@ function Canvas() {
       <Controls />
 
       <div className="relative">
+        <Legend />
         <Stage
           width={STAGE_WIDTH + collarMargin}
           height={STAGE_HEIGHT + collarMargin}

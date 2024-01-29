@@ -39,3 +39,31 @@ table {
   overflow-x: auto;
   white-space: nowrap;
 }
+
+.legend {
+  position: relative;
+  width: 20px;
+  height: 2px;
+  background: white;
+  margin-bottom: 8px;
+  opacity: 0.8;
+}
+
+.legend:before,
+.legend:after {
+  content: '';
+  display: block;
+  position: absolute;
+  bottom: 2px;
+  width: 2px;
+  height: 4px;
+  background: white;
+}
+
+.legend:before {
+  left: 0;
+}
+
+.legend:after {
+  right: 0;
+}
