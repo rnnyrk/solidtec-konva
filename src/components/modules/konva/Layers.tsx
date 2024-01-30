@@ -15,8 +15,9 @@ export function Layers() {
   const { currentLayerIndex, setCurrentLayer, layers, setLayers } = useBoardStore();
   const currentLayer = useCurrentLayer();
 
-  const stageWidthIncMargin = STAGE_WIDTH + currentLayer.collarMargin;
-  const stageHeightIncMargin = STAGE_HEIGHT + currentLayer.collarMargin;
+  const collarMargin = currentLayer.collarMargin * 2;
+  const stageWidthIncMargin = STAGE_WIDTH + collarMargin;
+  const stageHeightIncMargin = STAGE_HEIGHT + collarMargin;
 
   function onSetActiveLayer(index: number) {
     setSelected(null);
@@ -26,19 +27,40 @@ export function Layers() {
   function onDuplicateLayer(data: NewLayerModalValues) {
     let copyBlocks = [...currentLayer.blocks];
 
-    if (data.flipX) {
-      copyBlocks = copyBlocks.map((block) => ({
-        ...block,
-        // x: stageWidthIncMargin - block.x - (block.rotation ? BLOCK_HEIGHT : BLOCK_WIDTH),
-      }));
-    }
+    copyBlocks = copyBlocks.map((block) => {
+      // Calculate rotation offsets
+      let rotationOffsetX = BLOCK_WIDTH;
+      let rotationOffsetY = BLOCK_HEIGHT;
 
-    if (data.flipY) {
-      copyBlocks = copyBlocks.map((block) => ({
+      if (block.rotation === 90) {
+        rotationOffsetX = -BLOCK_HEIGHT;
+        rotationOffsetY = BLOCK_WIDTH;
+      } else if (block.rotation === 180) {
+        rotationOffsetX = -BLOCK_WIDTH;
+        rotationOffsetY = -BLOCK_HEIGHT;
+      } else if (block.rotation === 270) {
+        rotationOffsetX = BLOCK_HEIGHT;
+        rotationOffsetY = -BLOCK_WIDTH;
+      }
+
+      // Apply flipping for X and Y coordinates
+      let newX = block.x;
+      let newY = block.y;
+
+      if (data.flipX) {
+        newX = stageWidthIncMargin - block.x - rotationOffsetX;
+      }
+
+      if (data.flipY) {
+        newY = stageHeightIncMargin - block.y - rotationOffsetY;
+      }
+
+      return {
         ...block,
-        // y: stageHeightIncMargin - block.y - (block.rotation ? BLOCK_WIDTH : BLOCK_HEIGHT),
-      }));
-    }
+        x: newX,
+        y: newY,
+      };
+    });
 
     return copyBlocks;
   }

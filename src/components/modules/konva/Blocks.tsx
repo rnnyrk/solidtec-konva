@@ -85,7 +85,6 @@ export function Blocks() {
     newLayers[currentLayerIndex].blocks = newBlocks;
     setLayers(newLayers);
 
-    stageRef.current.batchDraw();
     shadowRef.current.hide();
   }
 
