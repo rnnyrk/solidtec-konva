@@ -16,14 +16,12 @@ import { Sidebar } from './Sidebar';
 const theme = getTheme();
 
 // @TODO Use selected instead of blocks in split evenly
-// @TODO duplicate layers with rotation
 
 // @TODO configuration
 // @TODO arrow for side of entering the canvas
 
-// @TODO legenda with cm to inch based on BLOCK_SIZE
-// @TODO write down offset on x,y when rotating
-// then use that to calculate final x,y after save
+// @TODO legenda also in inches
+// @TODO use Notion offset to calculate final x,y after save
 
 function Canvas() {
   const currentLayer = useCurrentLayer();
