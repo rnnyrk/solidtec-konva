@@ -154,6 +154,16 @@ export function Blocks() {
               stroke="#ddd"
               strokeWidth={1}
             />
+            <Rect
+              width={block.width}
+              height={block.height}
+              x={0}
+              y={0}
+              key={`intersector[${currentLayerIndex}]-${index}`}
+              id={`intersector[${currentLayerIndex}]-${index}`}
+              fill="transparent"
+              opacity={0.5}
+            />
             <Text
               width={isVertical ? block.height : block.width}
               height={isVertical ? block.width : block.height}

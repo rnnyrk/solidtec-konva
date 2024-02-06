@@ -1,9 +1,10 @@
 import { useRef, useState } from 'react';
+import { KonvaEventObject } from 'konva/lib/Node';
 import { Layer, Rect, Stage } from 'react-konva';
 
 import { useCurrentLayer } from 'store/board';
 import { getTheme } from 'utils';
-import { BLOCK_HEIGHT, BLOCK_WIDTH, STAGE_HEIGHT, STAGE_WIDTH } from 'utils/constants';
+import { BLOCK_HEIGHT, BLOCK_SIZE, BLOCK_WIDTH, STAGE_HEIGHT, STAGE_WIDTH } from 'utils/constants';
 
 import { Blocks } from './Blocks';
 import { Controls } from './Controls';
@@ -32,6 +33,42 @@ function Canvas() {
   const shadowRef = useRef<any | null>(null);
 
   const collarMargin = currentLayer.collarMargin * 2;
+
+  function onCollision(event: KonvaEventObject<DragEvent>) {
+    const target = event.target;
+    const targetRect = event.target.getClientRect();
+
+    function elementIntersectingCheck(r1: ClientRect, r2: ClientRect) {
+      const shrunkR1 = {
+        x: r1.x + BLOCK_SIZE,
+        y: r1.y + BLOCK_SIZE,
+        width: r1.width - BLOCK_SIZE * 2,
+        height: r1.height - BLOCK_SIZE * 2,
+      };
+
+      // Check if the shrunk r1 intersects with r2
+      return !(
+        shrunkR1.x > r2.x + r2.width ||
+        shrunkR1.x + shrunkR1.width < r2.x ||
+        shrunkR1.y > r2.y + r2.height ||
+        shrunkR1.y + shrunkR1.height < r2.y
+      );
+    }
+
+    blockLayerRef.current.children.forEach((group: any) => {
+      // Do not check intersection with itself
+      if (group === target) return;
+
+      const groupRect = group.getClientRect({ stroke: true });
+      const intersectingElement = group.children[1];
+
+      if (elementIntersectingCheck(groupRect, targetRect)) {
+        intersectingElement.fill('yellow');
+      } else {
+        intersectingElement.fill('transparent');
+      }
+    });
+  }
 
   return (
     <KonvaContext.Provider
@@ -74,7 +111,10 @@ function Canvas() {
             />
           </Layer>
 
-          <Layer ref={blockLayerRef}>
+          <Layer
+            ref={blockLayerRef}
+            onDragEnd={onCollision}
+          >
             <Blocks />
           </Layer>
         </Stage>
@@ -82,5 +122,7 @@ function Canvas() {
     </KonvaContext.Provider>
   );
 }
+
+type ClientRect = { x: number; y: number; width: number; height: number };
 
 export default Canvas;
